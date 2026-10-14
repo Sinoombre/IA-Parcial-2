@@ -1,0 +1,116 @@
+INFORME DE INVESTIGACIÓN: DATASETS, ENTORNO Y VERIFICACIÓN EXPLORATORIA
+Proyecto: Parcial 2 de Inteligencia Artificial
+Agente elegido: ChurnShield-Agent
+Fecha de verificación: 14 de octubre de 2026
+
+1. Dataset principal y URL verificada
+
+El enlace probable de Kaggle sí es válido: https://www.kaggle.com/datasets/yeanzc/telco-customer-churn-ibm-dataset. La página se identifica como “Telco customer churn: IBM dataset”, atribuye la procedencia al sample de IBM Cognos Analytics y describe una compañía ficticia con 7.043 clientes de California. La descarga pública contiene el archivo Telco_customer_churn.xlsx.
+
+La copia fue descargada mediante la API pública de Kaggle y se verificó localmente. El archivo tiene 7.043 filas y 33 columnas. Su SHA-256 es 1bcbc0ccc9b352175216979102628e579cfbde2c3ff57b005de168a433122640. La distribución de la variable objetivo es Churn Label = No en 5.174 casos y Yes en 1.869 casos. La tasa de fuga calculada es 1.869 / 7.043 = 0,2653698708, es decir, 26,54 %.
+
+Las 33 columnas existentes son CustomerID, Count, Country, State, City, Zip Code, Lat Long, Latitude, Longitude, Gender, Senior Citizen, Partner, Dependents, Tenure Months, Phone Service, Multiple Lines, Internet Service, Online Security, Online Backup, Device Protection, Tech Support, Streaming TV, Streaming Movies, Contract, Paperless Billing, Payment Method, Monthly Charges, Total Charges, Churn Label, Churn Value, Churn Score, CLTV y Churn Reason.
+
+La versión enriquecida de Kaggle no coincide con el CSV que IBM mantiene en su repositorio GitHub. El CSV de IBM está en https://raw.githubusercontent.com/IBM/telco-customer-churn-on-icp4d/master/data/Telco-Customer-Churn.csv y tiene 7.043 filas y 21 columnas: conserva la versión de variables generales con customerID, variables demográficas y de servicio, TotalCharges y Churn, pero no contiene los campos geográficos ni CLTV, Churn Score, Churn Reason y Churn Value. Por ello, el número “19 variables predictivas” del documento de casos de uso no describe las 33 columnas de la versión enriquecida; parece referirse a una selección de variables después de excluir identificadores, campos de reporte y resultados. El número de 33 columnas sí está confirmado por Kaggle.
+
+Los tipos observados en la versión de 33 columnas son los siguientes. Hay campos de texto para CustomerID, Country, State, City, Lat Long, Gender, Senior Citizen, Partner, Dependents, Phone Service, Multiple Lines, Internet Service, Online Security, Online Backup, Device Protection, Tech Support, Streaming TV, Streaming Movies, Contract, Paperless Billing, Payment Method, Churn Label y Churn Reason. Hay enteros para Count, Zip Code, Tenure Months, Churn Value, Churn Score y CLTV. Hay flotantes para Latitude, Longitude y Monthly Charges. Total Charges se lee como object porque contiene 11 celdas vacías; al convertirlo a numérico queda con 11 faltantes y rango observado de 18,8 a 8.684,8. Los rangos observados de otras variables son Tenure Months de 0 a 72, Monthly Charges de 18,25 a 118,75, Churn Score de 5 a 100 y CLTV de 2.003 a 6.500.
+
+En la versión enriquecida, todos los campos tienen cero faltantes salvo Churn Reason, con 5.174 faltantes, y Total Charges, con 11 valores vacíos que deben tratarse como faltantes. Los faltantes de Churn Reason son esperables: la razón se registra para quienes abandonaron y no para quienes permanecieron.
+
+La página de Kaggle muestra la licencia como “Other (specified in description)”, no como una licencia abierta estándar. El repositorio GitHub de IBM está bajo Apache-2.0, pero eso no demuestra automáticamente que el archivo de datos original tenga la misma licencia. Para la entrega académica se puede citar y usar con su procedencia, pero no se debe afirmar que el dataset tiene licencia Apache-2.0 ni redistribuirlo como si fuera de dominio público sin verificar los términos del sample de IBM. La página oficial de IBM documenta que es un sample de una compañía ficticia y que la variable de churn indica si el cliente se fue durante el último mes; también documenta cálculos derivados de CLTV y Churn Score.
+
+2. Fuga de información y política de columnas
+
+Churn Label y Churn Value son el resultado que se intenta predecir. Deben excluirse de cualquier entrenamiento y solo usarse para formar la etiqueta y evaluar resultados. Churn Label y Churn Value codifican esencialmente el mismo resultado, por lo que conservar ambos sería redundante y produciría fuga directa.
+
+Churn Reason debe excluirse. Es una explicación posterior de la salida y solo está disponible para clientes que ya abandonaron. La ausencia de Churn Reason en los clientes que permanecieron también codifica indirectamente el objetivo. Puede usarse después de la evaluación para análisis descriptivo de las causas, nunca como input de la decisión previa.
+
+Churn Score debe excluirse del modelo base. Es un puntaje producido por una herramienta predictiva de IBM SPSS Modeler y su descripción dice que incorpora factores asociados a churn. En un modelo de evaluación independiente, incluirlo mezclaría un predictor externo ya calculado con el modelo que se quiere medir y podría ocultar la capacidad real de las variables observables. Si se usa como referencia operacional, debe compararse como baseline separado y declararse que no es una entrada aprendida por ChurnShield.
+
+CLTV no es el resultado de churn y puede representar valor económico previo del cliente. Es admisible como input de la función de utilidad o como covariable si la política de datos supone que el CLTV estaba disponible antes de la decisión mensual. Sin embargo, la fuente dice que CLTV es un valor predicho mediante fórmulas corporativas y no publica su fórmula ni su unidad monetaria. Por eso se debe etiquetar como valor previamente calculado por la fuente, no como valor observado independiente. En el modelo exploratorio se incluyó CLTV como covariable legítima y se excluyeron Churn Score, Churn Reason y todas las columnas objetivo.
+
+CustomerID debe excluirse por ser identificador. Count debe excluirse por ser un campo de reporte que normalmente vale 1. Country y State son constantes o casi constantes en esta muestra y no aportan una señal generalizable; City, Zip Code, Lat Long, Latitude y Longitude se excluyeron para evitar que la demostración dependa de ubicación o identificación geográfica específica. Esta exclusión es una decisión de reproducibilidad, no una afirmación de que la geografía jamás pueda tener valor operacional.
+
+La lista de exclusión usada en la verificación fue CustomerID, Count, Country, State, City, Zip Code, Lat Long, Latitude, Longitude, Churn Label, Churn Value, Churn Score y Churn Reason. Las variables disponibles para el modelo fueron Gender, Senior Citizen, Partner, Dependents, Tenure Months, Phone Service, Multiple Lines, Internet Service, Online Security, Online Backup, Device Protection, Tech Support, Streaming TV, Streaming Movies, Contract, Paperless Billing, Payment Method, Monthly Charges, Total Charges y CLTV.
+
+3. Historial mensual y alternativas de datos
+
+El dataset IBM/Kaggle es una fotografía agregada. Tenure Months, Total Charges y el texto de IBM sobre abandono durante el último mes no constituyen un historial de observaciones repetidas por cliente. Por tanto, el dataset no permite afirmar que el modelo haya aprendido cambios mensuales individuales ni que se haya validado una política de varios ciclos sin una construcción adicional.
+
+La alternativa más cercana encontrada es el dataset público de churn uplift de Orange Belgium, presentado por Verhelst, Mercier, Shrestha y Bontempi. El artículo informa 11.896 muestras y 178 características anonimizadas. Procede de tres campañas realizadas entre septiembre y diciembre de 2020; los clientes de alto riesgo fueron divididos entre grupo de control y grupo tratado, la campaña ocurrió mensualmente y el resultado de churn se midió en una ventana de dos meses. El dataset sirve mejor para estudiar el efecto de campañas que para explicar variables de negocio, porque las variables están anonimizadas y numéricas mediante proyección PCA. El artículo indica una tasa de tratamiento de 75,74 %, respuesta de control de 3,6 % y respuesta del grupo tratado de 3,4 %. Está disponible desde OpenML y el artículo arXiv tiene licencia CC BY-NC-ND 4.0; el archivo debe citarse y usarse respetando esa licencia. El repositorio de código está en https://github.com/TheoVerhelst/Churn-Uplift-Dataset-Paper.
+
+Otra alternativa es KDD Cup 2009 de Orange, cuya fuente oficial informa 50.000 ejemplos tanto en entrenamiento como en prueba. La versión grande tiene 15.000 variables, de las cuales 14.740 son numéricas y 260 categóricas; incluye objetivos separados de churn, appetency y upselling, valores faltantes y etiquetas binarias. Es un dataset grande y oficial para propensión de churn, pero la documentación publicada no presenta una serie mensual identificada por cliente ni un tratamiento de retención. Sirve como benchmark de predicción, no resuelve por sí solo el requisito de historial mensual.
+
+Cell2Cell aparece en repositorios secundarios y Kaggle con aproximadamente 71.047 registros y 58 atributos, pero no se encontró durante esta verificación una fuente primaria estable que confirme una estructura longitudinal mensual, una licencia clara y un identificador temporal apto para la práctica. No debe reemplazar al dataset IBM sin una revisión adicional de procedencia y licencia.
+
+La recomendación práctica es conservar IBM/Kaggle como dataset principal explicable y usar el benchmark Orange Belgium como alternativa metodológica si se desea mostrar una campaña con tratamiento. Para la demostración de ChurnShield, el entorno mensual debe declararse explícitamente como simulación de snapshots y no como dato histórico real.
+
+El procedimiento defendible de simulación es el siguiente. Se fija una semilla documentada, por ejemplo 20261014, y se crea una fila por cliente y mes durante seis ciclos. Las variables estructurales del cliente se mantienen o evolucionan mediante reglas explícitas. Tenure Months aumenta en uno por ciclo mientras el cliente esté activo; Total Charges aumenta por Monthly Charges con una perturbación acotada; los estados de servicio pueden permanecer o cambiar con probabilidades definidas; y un cliente que abandona queda fuera de los siguientes ciclos. El churn observado del archivo original no debe reutilizarse como churn futuro de cada snapshot, porque eso sería copiar el resultado final hacia atrás. Puede usarse para calibrar una distribución inicial o para validar la forma global del simulador, pero no como etiqueta futura de las filas sintéticas.
+
+La variante estocástica debe generar los cambios con un generador pseudoaleatorio y guardar la semilla. Cada campaña produce una respuesta Bernoulli de cada cliente tratado. Los parámetros que no estén publicados por IBM deben marcarse como supuestos, someterse a análisis de sensibilidad y no presentarse como resultados empíricos. El simulador se debe usar para verificar el ciclo percepción, decisión y acción, la persistencia de estado, el logging y el aprendizaje; no para afirmar una precisión de negocio real.
+
+4. Diseño mínimo del simulador CRM
+
+El simulador tendrá un CRM que mantiene el estado activo de cada cliente, un generador de percepción que entrega el snapshot mensual, un agente que calcula riesgo y valor, un módulo de decisión que selecciona como máximo el 15 % superior por utilidad, un actuador que registra el lanzamiento de la campaña y un actualizador de entorno que genera respuesta, churn o permanencia. Cada ciclo debe registrar timestamp, customer_id anonimizado, mes simulado, percepción, probabilidad de churn, CLTV o valor relativo, utilidad de no actuar, utilidad de actuar, decisión, acción, resultado y semilla.
+
+La función propuesta es U(campaña) = p_churn × V_cliente × p_retención − C_campaña. En el dataset, CLTV puede utilizarse como V_cliente solo como valor relativo, porque la fuente no publica una unidad monetaria ni la fórmula corporativa. Para obtener una utilidad monetaria se necesitaría una conversión documentada; mientras no exista, C_campaña debe expresarse en la misma escala normalizada o la salida debe llamarse utilidad relativa.
+
+p_churn es la probabilidad producida por el modelo y puede estimarse con datos de entrenamiento, validación y calibración. V_cliente puede derivarse de CLTV disponible antes de la decisión, con normalización documentada. p_retención es la probabilidad de que la campaña evite el churn; no está identificada en IBM y debe tratarse como parámetro supuesto o estimarse con un dataset de tratamiento como Orange Belgium. C_campaña tampoco está publicado para el dataset IBM y debe ser un supuesto de simulación. En consecuencia, el simulador debe reportar análisis de sensibilidad sobre p_retención y C_campaña en lugar de presentar un único valor como verdad de negocio.
+
+Para evitar que la política actúe sobre todos los clientes, puede usarse la regla de elegibilidad U(campaña) > U(no acción) y ordenar por utilidad descendente hasta el límite de 15 %. Si no hay capacidad o presupuesto suficiente, la acción debe ser no actuar. Para cerrar el lazo de aprendizaje, el agente guarda el resultado de cada acción y actualiza una estadística de éxito por segmento o un modelo incremental; en la primera versión, el aprendizaje debe ser simple y auditable, por ejemplo un promedio suavizado por deciles de riesgo, no una afirmación de aprendizaje causal.
+
+5. Verificación exploratoria de modelos
+
+Se descargó Telco_customer_churn.xlsx desde la página pública de Kaggle. Se convirtió Total Charges a numérico, tratando sus 11 valores vacíos como faltantes. Se mantuvo un conjunto de prueba externo del 20 % con división estratificada y semilla fija 2026. El 80 % restante se dividió en entrenamiento y validación estratificados, usando cinco semillas internas: 11, 22, 33, 44 y 55. El conjunto de prueba no participó en el ajuste ni en la elección del modelo.
+
+La precisión solicitada se interpretó correctamente como precisión en el 15 % superior, Precision@15% = clientes que realmente hicieron churn dentro del 15 % seleccionado / número de clientes seleccionados. La recuperación en el 15 % superior es Recall@15% = churners capturados dentro del 15 % seleccionado / churners totales. La AUC se calculó sobre todas las probabilidades del conjunto evaluado. La tasa base es churners / clientes evaluados.
+
+Se evaluaron regresión logística y Random Forest. La regresión logística usó imputación mediana para numéricas, imputación por moda y one-hot encoding para categóricas, estandarización numérica y regularización logística. Random Forest usó 400 árboles, min_samples_leaf=3, class_weight=balanced y el mismo preprocesamiento categórico. Estos resultados son una exploración base, no la implementación final de ChurnShield.
+
+En el conjunto de prueba intacto, la regresión logística tuvo, promediando las cinco semillas, AUC 0,8550 con desviación estándar 0,0013, Precision@15% de 0,7255 con desviación estándar 0,0062 y Recall@15% de 0,4112 con desviación estándar 0,0035. La tasa base fue 0,2654 en cada repetición.
+
+En el conjunto de prueba intacto, Random Forest tuvo AUC promedio 0,8538 con desviación estándar 0,0028, Precision@15% de 0,7000 con desviación estándar 0,0144 y Recall@15% de 0,3968 con desviación estándar 0,0082. La tasa base fue 0,2654.
+
+En validación, la regresión logística tuvo AUC promedio 0,8671, desviación estándar 0,0115, Precision@15% promedio 0,7387, desviación estándar 0,0178 y Recall@15% promedio 0,4187, desviación estándar 0,0101. Random Forest tuvo AUC promedio 0,8676, desviación estándar 0,0086, Precision@15% promedio 0,7396, desviación estándar 0,0280 y Recall@15% promedio 0,4193, desviación estándar 0,0159.
+
+El umbral original de Precision@15% >= 0,75 es una medida SMART más precisa que “precisión de al menos 75 % en la identificación del 15 %”. La fórmula debe escribirse explícitamente y el umbral debe fijarse antes de la evaluación final. Con estas líneas base, el umbral no se alcanza en el test intacto: la mejor media fue 0,7255 de regresión logística. No se debe bajar a 0,70 después de observar el test. Se debe conservar el umbral de 0,75 para la prueba final, declarar si el agente lo cumple o no y explicar la causa probable. Si se reformula, la reformulación debe hacerse antes de una nueva evaluación y con justificación metodológica, no para acomodar el resultado observado.
+
+Los archivos reproducibles de esta exploración son research/exploratory_metrics_by_seed.csv, research/exploratory_metrics_summary.csv y research/exploratory_metadata.json. El script temporal usado para producirlos conservó la configuración de semillas, particiones, variables excluidas y modelos.
+
+6. Verificación del supuesto sobre PhishGuard
+
+No se confirmó la existencia de un dataset público, grande y listo para usar que contenga simultáneamente etiquetas de phishing, mensajes crudos y resultados observados de SPF, DKIM y DMARC para cada mensaje.
+
+El corpus público de SpamAssassin sí reproduce todos los encabezados y contiene 6.047 mensajes: 500 spam, 2.500 easy_ham, 250 hard_ham, 1.400 easy_ham_2 y 1.397 spam_2. Sin embargo, el propio README advierte que hubo ofuscación de direcciones y reemplazo de algunos hosts, que los mensajes provienen aproximadamente de 2002 a 2006 y que los derechos de autor del texto permanecen en sus remitentes. No confirma campos Authentication-Results con SPF, DKIM y DMARC para todos los mensajes. Además, es principalmente spam/no spam, no una colección limpia de phishing.
+
+El corpus TREC Spam de NIST ofrece enlaces a corpus de 2005, 2006 y 2007, pero la fuente consultada no confirma una etiqueta de phishing ni la presencia sistemática de resultados SPF, DKIM y DMARC. La colección “Phishing Email: 11 Curated Datasets” de Figshare tiene licencia CC BY 4.0 y contiene conjuntos curados, incluyendo Nazario y Nigerian Fraud como phishing, pero la página consultada no demuestra que cada mensaje conserve resultados de autenticación SPF, DKIM y DMARC. Por ello, esos recursos pueden servir para investigar PhishGuard en el futuro, pero no justifican aún cambiar sus puntajes de disponibilidad o medibilidad.
+
+La guía NIST SP 800-177 Rev. 1 confirma que SPF, DKIM y DMARC son mecanismos distintos para autenticar el dominio remitente. La existencia de esos protocolos no implica que un corpus antiguo contenga sus resultados de validación. Los resultados dependen del servidor receptor y del momento de recepción; no deben inferirse retrospectivamente solo a partir del texto From o de registros DNS actuales.
+
+7. Decisión recomendada para continuar
+
+Se mantiene ChurnShield-Agent como agente elegido. La investigación fortalece el caso de uso, pero también obliga a corregir el documento: el dataset principal es una fotografía, el historial mensual debe ser simulado y los parámetros de retención y costo son supuestos salvo que se use un dataset de tratamiento.
+
+La siguiente implementación debe usar el archivo de 33 columnas solo como insumo de desarrollo local, mantener la exclusión de columnas con fuga, separar el modelo de riesgo del valor CLTV, hacer visible el ciclo percepción-decisión-acción, guardar logs completos y probar el simulador con semilla fija y variante estocástica. Los resultados de precisión deben reportarse como Precision@15% y no como accuracy general.
+
+8. Referencias bibliográficas
+
+IBM. (2026). Telco customer churn. IBM Cognos Analytics Documentation. https://www.ibm.com/docs/en/cognos-analytics/12.0.x?topic=samples-telco-customer-churn
+
+IBM. (2024). Predict Customer Churn using Watson Machine Learning and Jupyter Notebooks on Cloud Pak for Data. GitHub. https://github.com/IBM/telco-customer-churn-on-icp4d
+
+TanKY. (2020). Telco customer churn: IBM dataset. Kaggle. https://www.kaggle.com/datasets/yeanzc/telco-customer-churn-ibm-dataset
+
+Verhelst, T., Mercier, D., Shrestha, J., y Bontempi, G. (2023). A churn prediction dataset from the telecom sector: a new benchmark for uplift modeling. arXiv:2312.07206. https://arxiv.org/html/2312.07206v1
+
+Verhelst, T., Mercier, D., Shrestha, J., y Bontempi, G. (2023). Churn-Uplift-Dataset-Paper. GitHub. https://github.com/TheoVerhelst/Churn-Uplift-Dataset-Paper
+
+KDD Cup. (2009). KDD Cup 2009: Customer relationship prediction — Data. SIGKDD. https://www.kdd.org/kdd-cup/view/kdd-cup-2009/Data
+
+Apache SpamAssassin Project. (2006). SpamAssassin public mail corpus: README. https://spamassassin.apache.org/old/publiccorpus/readme.html
+
+National Institute of Standards and Technology. (2019). Trustworthy Email (NIST SP 800-177 Rev. 1). https://csrc.nist.gov/pubs/sp/800/177/r1/final
+
+National Institute of Standards and Technology. (2007). TREC Spam Track data. https://trec.nist.gov/data/spam.html
+
+Champa, A. I., Rabbi, M. F., y Zibran, M. F. (2024). Phishing Email: 11 Curated Datasets. Figshare. https://doi.org/10.6084/m9.figshare.24952503

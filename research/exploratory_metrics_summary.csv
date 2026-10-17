@@ -1,7 +1,0 @@
-,,base_rate,auc,auc,precision_top15,precision_top15,recall_top15,recall_top15
-,,mean,mean,std,mean,std,mean,std
-model,split,,,,,,,
-logistic_regression,test,0.2654,0.855,0.0013,0.7255,0.0062,0.4112,0.0035
-logistic_regression,validation,0.2654,0.8671,0.0115,0.7387,0.0178,0.4187,0.0101
-random_forest,test,0.2654,0.8538,0.0028,0.7,0.0144,0.3968,0.0082
-random_forest,validation,0.2654,0.8676,0.0086,0.7396,0.028,0.4193,0.0159

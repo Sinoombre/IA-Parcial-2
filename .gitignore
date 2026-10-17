@@ -1,7 +1,2 @@
-# Datasets descargados; no redistribuir archivos de terceros sin confirmar licencia
-data/*.csv
-data/*.xlsx
-data/**/*.csv
-data/**/*.xlsx
 __pycache__/
 *.pyc

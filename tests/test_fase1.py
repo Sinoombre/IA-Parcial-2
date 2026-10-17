@@ -2,8 +2,8 @@ from pathlib import Path
 
 import yaml
 
-from churnshield.decision import select_candidates
-from churnshield.s03 import run, synthetic_rows
+from src.churnshield.decision import select_candidates
+from src.churnshield.s03 import run, synthetic_rows
 
 
 ROOT = Path(__file__).resolve().parents[1]

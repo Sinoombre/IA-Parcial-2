@@ -1,0 +1,43 @@
+version: "fase-1"
+estado: "BORRADOR: Se debe volver a revisar antes de realizar el S01 (Simulacion 1)"
+fecha_confirmacion: null
+
+medidas_formales:
+  M1_precision_at_15:
+    estado: "provisional"
+    formula: "TP_top15 / n_selected"
+    umbral: 0.75
+    direccion: "mayor_o_igual"
+    criterio: "Precision@15% en la política final del agente"
+  M2_trazabilidad:
+    estado: "provisional"
+    formula: "decisiones_con_campos_obligatorios / decisiones_totales"
+    umbral: 1.0
+    direccion: "igual"
+    criterio: "100% de decisiones reconstruibles desde perceptions.jsonl y decisions.csv"
+  M3_manejo_fallas:
+    estado: "provisional"
+    formula: "casos_de_falla_manejados_y_registrados / casos_de_falla"
+    umbral: 1.0
+    direccion: "igual"
+    criterio: "100% de fallas esperadas terminan sin interrupción y quedan registradas"
+
+diagnosticos_sin_umbral_formal:
+  recall_at_15:
+    formula: "TP_top15 / total_de_churners"
+    unidad: "proporcion"
+  lift_at_15:
+    formula: "precision_at_15 / tasa_base_churn"
+    unidad: "multiplicador"
+  auc_roc:
+    formula: "AUC de probabilidades frente a etiqueta"
+    unidad: "proporcion"
+  brier_score:
+    formula: "mean((probabilidad - etiqueta)^2)"
+    unidad: "proporcion"
+
+protocolo:
+  ranking_top15: "capacidad floor(0.15*N); ordenar por u_act descendente, p_churn descendente y customer_id ascendente; conservar solo u_act > 0"
+  prueba_reservada: "No usar en Fase 1; bloquear hasta confirmación final"
+  bootstrap_m1: "10 remuestreos estratificados con semillas 1..10; diagnóstico de variabilidad, no cambia el criterio puntual M1"
+  confirmacion_pareja_requerida: true

@@ -1,0 +1,105 @@
+version: "fase-1-borrador"
+estado: "BORRADOR: Se debe volver a revisar antes de realizar el S01 (Simulacion 1)"
+
+features:
+  allowed_predictors:
+    - Partner
+    - Dependents
+    - Phone Service
+    - Multiple Lines
+    - Internet Service
+    - Online Security
+    - Online Backup
+    - Device Protection
+    - Tech Support
+    - Streaming TV
+    - Streaming Movies
+    - Contract
+    - Paperless Billing
+    - Payment Method
+    - Tenure Months
+    - Monthly Charges
+    - Total Charges
+  excluded_sensitive:
+    - Gender
+    - Senior Citizen
+  excluded_leakage:
+    - Churn Label
+    - Churn Value
+    - Churn Score
+    - Churn Reason
+  excluded_identifier_or_geography:
+    - CustomerID
+    - Count
+    - Country
+    - State
+    - City
+    - Zip Code
+    - Lat Long
+    - Latitude
+    - Longitude
+  cltv_usage: "solo_utilidad_no_predictor"
+
+data:
+  target: "Churn Value"
+  total_charges_missing: "imputar_0_y_conservar_filas"
+  numeric_imputation_fallback: "median_train"
+  categorical_imputation_fallback: "mode_train"
+  one_hot_handle_unknown: "ignore"
+  fit_preprocessing_only_on_train: true
+
+selection:
+  capacity_fraction: 0.15
+  capacity_rule: "floor(capacity_fraction * n_active)"
+  require_positive_utility: true
+  ranking_keys: ["u_act_desc", "p_churn_desc", "customer_id_asc"]
+  tie_break_deterministic: true
+
+utility:
+  formula: "p_churn * r * v_cliente - cost"
+  no_action: 0.0
+  r0: 0.25
+  cost: 0.05
+  sensitivity_r0: [0.10, 0.25, 0.40]
+  sensitivity_cost: [0.02, 0.05, 0.10]
+  cltv_relative_to: "mean_cltv_train"
+
+model:
+  base: "logistic_regression_l2"
+  cv_folds: 5
+  selection_metric: "precision_at_15"
+  tie_break_metric: "log_loss"
+  random_forest_comparison: true
+  final_test_seed: 1702
+  final_test_locked: true
+
+simulation:
+  status: "pendiente_fase_posterior"
+  cycles: 6
+  master_seed: 1702
+  repetition_seeds: [101, 102, 103, 104, 105]
+  r_true: 0.35
+  oracle_mean_target: 0.2654
+  truth_fields_evaluator_only: ["would_churn", "saved", "q_i"]
+
+learning:
+  status: "pendiente_fase_posterior"
+  segments: "risk_terciles_from_train"
+  m0: 10
+  update_formula: "(m0 * r0 + E - O) / (m0 + E)"
+  update_timing: "end_cycle_use_next_cycle"
+
+crm:
+  status: "pendiente_fase_posterior"
+  campaign_type: "retention_campaign"
+  outcomes: ["accepted", "rejected", "error", "timeout"]
+  timeout_retries: 1
+
+phase1:
+  scenario: "S03"
+  synthetic_clients: 50
+  models_trained: false
+  simulator_implemented: false
+  learning_implemented: false
+  final_s01_executed: false
+  secrets_in_config: false

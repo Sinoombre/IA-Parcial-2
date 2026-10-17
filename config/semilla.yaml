@@ -1,0 +1,27 @@
+
+# La partición 2026 ya fue observada en la línea base exploratoria anterior.
+base_linea_base:
+  semilla_particion_observada: 2026
+  nota: "No reutilizar esta partición para elegir el modelo final."
+
+particion_reservada:
+  semilla: 1702
+  proporcion_prueba: 0.20
+  estratificar_por: "Churn Value"
+  archivo_indices: "particion_prueba_indices.csv"
+  uso: "Evaluación final únicamente; no ajustar hiperparámetros ni elegir modelo."
+
+validacion_modelo:
+  semillas_cv: [11, 22, 33, 44, 55]
+  folds: 5
+  metrica_principal: "precision_at_15"
+
+supuestos_estadisticos:
+  semilla: 20261017
+
+simulador_markov:
+  semilla: 20261017
+  ciclos: 6
+  nota: "Pendiente de disponer del panel de seis ciclos; verifica el simulador, no clientes reales."
+#Simulador de markov para evaluar la evolución de los clientes a lo largo de seis ciclos, utilizando datos simulados en lugar de clientes reales.
+#Se puede quitar por decision de usar regresion logistica para predecir churn, pero se va a mantiener por si se desea usar en el futuro.

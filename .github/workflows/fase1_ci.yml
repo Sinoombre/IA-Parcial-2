@@ -28,15 +28,19 @@ jobs:
 
       - name: Compilar código
         run: |
-          python -m compileall -q churnshield tests
+          python -m compileall -q src/churnshield tests
 
       - name: Ejecutar S03
+        env:
+          PYTHONPATH: src
         run: |
           python -m churnshield run \
             --scenario S03 \
             --config config/agente.yaml
 
       - name: Ejecutar pruebas
+        env:
+          PYTHONPATH: src
         run: |
           python -m pytest -q tests
 

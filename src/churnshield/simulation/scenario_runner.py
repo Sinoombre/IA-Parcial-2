@@ -18,7 +18,6 @@ from ..scenarios.retention import SCENARIOS, SCENARIO_CONFIGS, build_fixture
 
 
 def _rngs(seed: int):
-
     children = np.random.SeedSequence(seed).spawn(3)
     return tuple(np.random.default_rng(child) for child in children)
 
@@ -102,7 +101,6 @@ def run_scenario(
     output_dir: str | Path = "artifacts/scenarios",
     evaluator_output_dir: str | Path | None = None,
 ) -> dict:
-
     scenario = scenario.upper()
     if scenario == "S01":
         raise PermissionError(

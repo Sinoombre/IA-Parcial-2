@@ -1,4 +1,5 @@
 """Evaluación reproducible de trazabilidad (M2) y fallas (M3)."""
+
 from __future__ import annotations
 
 import csv
@@ -7,9 +8,24 @@ from collections import Counter
 from pathlib import Path
 
 M2_FIELDS = (
-    "run_id", "scenario_id", "seed", "cycle", "timestamp_utc", "customer_id",
-    "p_churn", "v_cliente", "segment", "r_hat", "u_act", "u_noact", "rank",
-    "k", "selected", "action", "crm_status", "campaign_id",
+    "run_id",
+    "scenario_id",
+    "seed",
+    "cycle",
+    "timestamp_utc",
+    "customer_id",
+    "p_churn",
+    "v_cliente",
+    "segment",
+    "r_hat",
+    "u_act",
+    "u_noact",
+    "rank",
+    "k",
+    "selected",
+    "action",
+    "crm_status",
+    "campaign_id",
 )
 
 
@@ -24,13 +40,14 @@ def _jsonl(path: Path) -> list[dict]:
 
 
 def evaluate_m2(run_dir: str | Path) -> dict:
-
     """Comprueba reconstrucción 1:1 de decisiones desde los logs públicos."""
     root = Path(run_dir)
     decisions = _rows(root / "decisions.csv")
     perceptions = _jsonl(root / "perceptions.jsonl")
     outcomes = _rows(root / "outcomes.csv")
-    perception_keys = {(r["run_id"], str(r["cycle"]), r["customer_id"]) for r in perceptions}
+    perception_keys = {
+        (r["run_id"], str(r["cycle"]), r["customer_id"]) for r in perceptions
+    }
     outcome_keys = {(r["run_id"], r["cycle"], r["customer_id"]) for r in outcomes}
     reconstructible = 0
 
@@ -38,7 +55,9 @@ def evaluate_m2(run_dir: str | Path) -> dict:
         key = (row["run_id"], row["cycle"], row["customer_id"])
         fields_ok = all(field in row for field in M2_FIELDS)
         linked = key in perception_keys and key in outcome_keys
-        values_ok = all(row[field] != "" for field in M2_FIELDS if field != "campaign_id")
+        values_ok = all(
+            row[field] != "" for field in M2_FIELDS if field != "campaign_id"
+        )
         reconstructible += int(fields_ok and linked and values_ok)
 
     total = len(decisions)
@@ -53,7 +72,6 @@ def evaluate_m2(run_dir: str | Path) -> dict:
 
 
 def evaluate_m3(run_dir: str | Path) -> dict:
-
     """Comprueba continuidad y registro de la falla esperada del escenario."""
     root = Path(run_dir)
     summary = json.loads((root / "scenario_summary.json").read_text(encoding="utf-8"))
@@ -64,26 +82,46 @@ def evaluate_m3(run_dir: str | Path) -> dict:
     statuses = Counter(row["final_status"] for row in outcomes)
     checks = {}
     if scenario == "S04":
-        checks["small_population"] = all(int(row["k"]) == 0 and int(row["n_selected"]) == 0 for row in cycles)
+        checks["small_population"] = all(
+            int(row["k"]) == 0 and int(row["n_selected"]) == 0 for row in cycles
+        )
 
     elif scenario == "S06":
-        checks["zero_positive_utility"] = bool(decisions) and all(float(row["u_act"]) <= 0 for row in decisions) and not any(int(row["selected"]) for row in decisions)
+        checks["zero_positive_utility"] = (
+            bool(decisions)
+            and all(float(row["u_act"]) <= 0 for row in decisions)
+            and not any(int(row["selected"]) for row in decisions)
+        )
 
     elif scenario == "S08":
-        checks["missing_values"] = summary.get("missing_cell_count", 0) >= 3 and summary.get("imputed_missing_count", 0) == summary.get("missing_cell_count", 0)
+        checks["missing_values"] = summary.get(
+            "missing_cell_count", 0
+        ) >= 3 and summary.get("imputed_missing_count", 0) == summary.get(
+            "missing_cell_count", 0
+        )
 
     elif scenario == "S09":
         checks["unknown_category"] = summary.get("unknown_category_handled") is True
 
     elif scenario == "S10":
-        failure_rows = [row for row in outcomes if row["final_status"] in {"rejected", "error", "crm_error"}]
-        checks["failure_statuses_registered"] = all(row["final_status"] and int(row["attempts"]) >= 1 for row in failure_rows)
-        checks["timeout_retry_registered"] = any(int(row["retry_used"]) == 1 for row in outcomes)
+        failure_rows = [
+            row
+            for row in outcomes
+            if row["final_status"] in {"rejected", "error", "crm_error"}
+        ]
+        checks["failure_statuses_registered"] = all(
+            row["final_status"] and int(row["attempts"]) >= 1 for row in failure_rows
+        )
+        checks["timeout_retry_registered"] = any(
+            int(row["retry_used"]) == 1 for row in outcomes
+        )
         checks["continuity"] = len(outcomes) == len(decisions)
 
     else:
-        checks["scenario_completed"] = bool(decisions) and len(outcomes) == len(decisions)
-        
+        checks["scenario_completed"] = bool(decisions) and len(outcomes) == len(
+            decisions
+        )
+
     passed = sum(checks.values())
     return {
         "metric": "M3",

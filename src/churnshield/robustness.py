@@ -1,4 +1,5 @@
 """Pruebas de robustez del pipeline que alimentan la evidencia de Fase 5."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -11,25 +12,27 @@ from .model import make_pipeline
 def _toy_frame(contract_values: list[str]) -> pd.DataFrame:
     rows = []
     for index, contract in enumerate(contract_values):
-        rows.append({
-            "Partner": "Yes" if index % 2 else "No",
-            "Dependents": "No",
-            "Phone Service": "Yes",
-            "Multiple Lines": "No phone service",
-            "Internet Service": "DSL",
-            "Online Security": "No",
-            "Online Backup": "No",
-            "Device Protection": "No",
-            "Tech Support": "No",
-            "Streaming TV": "No",
-            "Streaming Movies": "No",
-            "Contract": contract,
-            "Paperless Billing": "Yes",
-            "Payment Method": "Electronic check",
-            "Tenure Months": 12 + index,
-            "Monthly Charges": 70.0 + index,
-            "Total Charges": 840.0 + index,
-        })
+        rows.append(
+            {
+                "Partner": "Yes" if index % 2 else "No",
+                "Dependents": "No",
+                "Phone Service": "Yes",
+                "Multiple Lines": "No phone service",
+                "Internet Service": "DSL",
+                "Online Security": "No",
+                "Online Backup": "No",
+                "Device Protection": "No",
+                "Tech Support": "No",
+                "Streaming TV": "No",
+                "Streaming Movies": "No",
+                "Contract": contract,
+                "Paperless Billing": "Yes",
+                "Payment Method": "Electronic check",
+                "Tenure Months": 12 + index,
+                "Monthly Charges": 70.0 + index,
+                "Total Charges": 840.0 + index,
+            }
+        )
     return pd.DataFrame(rows, columns=ALLOWED_PREDICTORS)
 
 

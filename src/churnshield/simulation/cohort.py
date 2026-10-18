@@ -19,7 +19,6 @@ from ..utility import add_utilities
 
 
 def _streams(seed: int) -> dict[str, np.random.Generator]:
-
     ss = np.random.SeedSequence(int(seed))
     children = ss.spawn(3)
     return {
@@ -185,7 +184,6 @@ def run_simulation(
     output_dir: str | Path = "artifacts/cohort_simulation",
     evaluator_output_dir: str | Path | None = None,
 ) -> dict:
-
     evaluator_root = evaluator_output_path(output_dir, evaluator_output_dir)
     dev, p, q, meta = development_inputs()
     public, truth = simulate_cohort(dev, p, q, repetition_seed=repetition_seed)

@@ -35,6 +35,18 @@ def main() -> None:
     evaluator = sub.add_parser("evaluate", help="calcula M2 y M3 desde los logs")
     evaluator.add_argument("--input-dir", default="artifacts/scenarios")
     evaluator.add_argument("--output", default=None)
+    final_evaluator = sub.add_parser(
+        "evaluate-final",
+        help="ejecuta la evaluación final reservada con autorización explícita",
+    )
+    final_evaluator.add_argument(
+        "--confirm-final",
+        action="store_true",
+        help="confirma que la evaluación reservada fue autorizada",
+    )
+    final_evaluator.add_argument(
+        "--output-dir", default="artifacts/final_evaluation"
+    )
     args = parser.parse_args()
     if args.command == "run" and args.scenario.upper() == "S03":
         result = run_s03()
@@ -120,6 +132,20 @@ def main() -> None:
         if args.output:
             Path(args.output).write_text(rendered + "\n", encoding="utf-8")
         print(rendered)
+        return
+    if args.command == "evaluate-final":
+        from .final_eval import run_final_evaluation
+
+        print(
+            json.dumps(
+                run_final_evaluation(
+                    output_dir=args.output_dir,
+                    confirm_final=args.confirm_final,
+                ),
+                indent=2,
+                default=float,
+            )
+        )
         return
     raise SystemExit("Solo está implementado el escenario S03 para el comando run")
 

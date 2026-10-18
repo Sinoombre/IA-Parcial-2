@@ -12,12 +12,13 @@ def test_final_evaluation_requires_explicit_authorization(tmp_path):
 
 
 def test_final_evaluation_cli_help_mentions_confirmation():
+    import sys
     from subprocess import run
     import os
 
     env = {**os.environ, "PYTHONPATH": "src"}
     result = run(
-        ["python3", "-m", "churnshield", "evaluate-final", "--help"],
+        [sys.executable, "-m", "churnshield", "evaluate-final", "--help"],
         capture_output=True,
         text=True,
         env=env,

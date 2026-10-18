@@ -1,4 +1,4 @@
-name: Phase 1 CI
+name: Phase 2 CI
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  phase1:
+  phase2:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,16 +30,28 @@ jobs:
         run: |
           python -m compileall -q src/churnshield tests
 
-      - name: Ejecutar S03
-        env:
-          PYTHONPATH: src
-        run: |
-          python -m churnshield run \
-            --scenario S03 \
-            --config config/agente.yaml
-
-      - name: Ejecutar pruebas
+      - name: Ejecutar pruebas de Fase 1 y Fase 2
         env:
           PYTHONPATH: src
         run: |
           python -m pytest -q tests
+
+      - name: Ejecutar evaluación de desarrollo
+        env:
+          PYTHONPATH: src
+          PYTHONWARNINGS: ignore
+        run: |
+          python -m churnshield dev-eval
+
+      - name: Comparar arreglos de linealidad y multicolinealidad
+        env:
+          PYTHONPATH: src
+          PYTHONWARNINGS: ignore
+        run: |
+          python -m churnshield.phase2_fixes
+
+
+      - name: Proteger el EDA oficial de main
+        run: |
+          test "$(sha256sum data/EDA.ipynb | cut -d ' ' -f 1)" = \
+          "e7242422ab7051bfddb5dae19007308d4ddbc05babbaf43bec663b5e7bc73d77"

@@ -5,7 +5,9 @@ por tanto, los mismos folds) y las mismas métricas que random_forest, de modo
 que la comparación entre ambos modelos sea directa y pareada.
 """
 from __future__ import annotations
+import argparse
 import json
+import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -17,8 +19,14 @@ from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SRC_ROOT = str(REPO_ROOT / "src")
+if SRC_ROOT not in sys.path:
+    sys.path.insert(0, SRC_ROOT)
+
 from churnshield.features import ALLOWED_PREDICTORS
 from churnshield.metrics import precision_at_k, recall_at_k, lift_at_k, calibration_metrics
+from churnshield.data import load_dev
 
 NUMERIC = ["Tenure Months", "Monthly Charges", "Total Charges"]
 CATEGORICAL = [c for c in ALLOWED_PREDICTORS if c not in NUMERIC]
@@ -99,3 +107,35 @@ def compare_logistic_regression(X: pd.DataFrame, y: pd.Series, ids: pd.Series) -
 def save_comparison(result: dict) -> None:
     Path("artifacts").mkdir(exist_ok=True)
     Path("artifacts/logistic_regression_comparison.json").write_text(json.dumps(result, indent=2, default=float))
+
+
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description="Ejecuta la comparación de regresión logística.")
+    parser.parse_args(argv)
+
+    df, metadata = load_dev()
+    result = compare_logistic_regression(
+        df[ALLOWED_PREDICTORS],
+        df["Churn Value"].astype(int),
+        df["CustomerID"].astype(str),
+    )
+    save_comparison(result)
+    chosen = next(
+        candidate for candidate in result["candidates"]
+        if candidate["model"] == result["chosen_model"]
+    )
+    summary = {
+        "experiment": "logistic_regression",
+        "dev_rows": metadata["dev_count"],
+        "chosen_model": result["chosen_model"],
+        "metrics": {
+            key: chosen[key]
+            for key in ("precision_at_15", "recall_at_15", "lift_at_15", "auc", "log_loss")
+        },
+        "detailed_results": "artifacts/logistic_regression_comparison.json",
+    }
+    print(json.dumps(summary, indent=2))
+
+
+if __name__ == "__main__":
+    main()

@@ -44,3 +44,35 @@ def test_compare_selects_best_candidate_and_saves_result(monkeypatch, tmp_path):
         (tmp_path / "artifacts" / "random_forest_comparison.json").read_text()
     )
     assert saved["chosen_model"] == "rf_regularized"
+
+
+def test_main_prints_reduced_json_and_saves_detailed_result(monkeypatch, capsys):
+    df = pd.DataFrame({
+        "Churn Value": [0, 1],
+        "CustomerID": ["A", "B"],
+        **{column: [0, 1] for column in random_forest.ALLOWED_PREDICTORS},
+    })
+    result = {
+        "chosen_model": "rf_regularized",
+        "candidates": [{
+            "model": "rf_regularized",
+            "precision_at_15": 0.5,
+            "recall_at_15": 0.2,
+            "lift_at_15": 1.5,
+            "auc": 0.8,
+            "log_loss": 0.4,
+        }],
+    }
+    saved = []
+    monkeypatch.setattr(random_forest, "load_dev", lambda: (df, {"dev_count": 2}))
+    monkeypatch.setattr(random_forest, "compare_random_forest", lambda *args: result)
+    monkeypatch.setattr(random_forest, "save_comparison", saved.append)
+
+    random_forest.main([])
+
+    output = json.loads(capsys.readouterr().out)
+    assert output["chosen_model"] == "rf_regularized"
+    assert output["dev_rows"] == 2
+    assert output["metrics"]["auc"] == 0.8
+    assert output["detailed_results"] == "artifacts/random_forest_comparison.json"
+    assert saved == [result]

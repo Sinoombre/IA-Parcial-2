@@ -26,14 +26,18 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 `config/agent.yaml` es la fuente canónica de predictores. El modelo, la
 evaluación y la interfaz usan exactamente sus nueve campos `allowed_predictors`;
-las ocho columnas bajo `excluded_by_design` no se usan como features. El
-model card y el manifiesto registran ese mismo conjunto y los hashes del
-dataset, la partición, la configuración y los umbrales.
+las ocho columnas bajo `excluded_by_design` no se usan como features. El modelo
+de desarrollo es un stacking regularizado de regresión logística, LightGBM,
+XGBoost y CatBoost. La regresión logística independiente se conserva como
+referencia de comparación. El model card y el manifiesto registran el conjunto
+de features y los hashes del dataset, la partición, la configuración y los
+umbrales.
 
-La interfaz usa un modelo de desarrollo de `artifacts/public/dev_eval/`. Antes de
+La interfaz usa el modelo de desarrollo de
+`artifacts/public/dev_eval/stacking/`. Antes de
 predecir verifica el model card; si el modelo falta, la tarjeta es inválida o
 las features no coinciden, responde con HTTP 503 en vez de inventar valores.
-Para regenerar el modelo, ejecuta `dev-eval` después de integrar el código:
+Para entrenar y regenerar el modelo, ejecuta `dev-eval`:
 
 ```powershell
 python -m churnshield dev-eval
@@ -88,7 +92,16 @@ python -m churnshield evaluate `
   --expected-seeds 101 102 103 104 105
 python experiments\logistic_regression.py
 python experiments\random_forest.py
+python experiments\stacking.py
 ```
+
+`stacking.py` compara una regresión logística regularizada con dos variantes de
+stacking (LightGBM + XGBoost, con y sin CatBoost), usando únicamente desarrollo,
+las nueve features permitidas, tres semillas y precisión en el 15% superior.
+Sus resultados se escriben en
+`artifacts/public/experiments/stacking/stacking_comparison.json`. `dev-eval`
+entrena la variante con CatBoost y regenera el modelo que consume la interfaz;
+el experimento no ejecuta S01.
 
 `evaluate` lee `artifacts/public/scenarios/` y guarda el resumen en
 `artifacts/public/scenario_evaluation/evaluation.json`. Rechaza carpetas sin

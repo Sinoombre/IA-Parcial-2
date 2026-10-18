@@ -13,7 +13,12 @@ import pandas as pd
 
 from .data import load_dev, load_reserved
 from .features import ALLOWED_PREDICTORS
-from .model import make_pipeline, select_C
+from .model import select_C
+from .stacking import (
+    STACKING_META_C,
+    STACKING_SEEDS,
+    make_stacking_pipeline,
+)
 from .metrics import calibration_metrics
 from .utility import add_utilities
 from .decision import select_candidates
@@ -69,8 +74,10 @@ def run_final_evaluation(
     X_dev = dev[list(ALLOWED_PREDICTORS)].copy()
     y_dev = dev["Churn Value"].astype(int)
     ids_dev = dev["CustomerID"].astype(str)
-    chosen_c, cv_table, cv_summary = select_C(X_dev, y_dev, ids_dev)
-    pipeline = make_pipeline(chosen_c)
+    chosen_c, cv_table, cv_summary = select_C(
+        X_dev, y_dev, ids_dev, seeds=STACKING_SEEDS
+    )
+    pipeline = make_stacking_pipeline(random_state=1702, include_catboost=True)
     pipeline.fit(X_dev, y_dev)
 
     reserved = load_reserved(
@@ -152,7 +159,7 @@ def run_final_evaluation(
     pd.DataFrame(
         [{"customer_id": cid, "churn_value": y_by_id[cid]} for cid in ids_reserved]
     ).to_csv(truth_dir / "evaluator_truth.csv", index=False)
-    cv_table.to_csv(out / "cv_results.csv", index=False)
+    cv_table.to_csv(out / "baseline_logistic_cv_results.csv", index=False)
     joblib.dump(pipeline, out / "model_v1_frozen.joblib")
 
     metrics = {
@@ -176,7 +183,9 @@ def run_final_evaluation(
         "bootstrap_std": float(np.std(bootstrap, ddof=1))
         if len(bootstrap) > 1
         else float("nan"),
-        "chosen_C": chosen_c,
+        "model_type": "stacking_logistic_lightgbm_xgboost_catboost",
+        "stacking_meta_logistic_C": STACKING_META_C,
+        "baseline_logistic_C": chosen_c,
         "dataset_sha256": dev_meta["dataset_sha256"],
         "partition_sha256": dev_meta["partition_sha256"],
         "config_sha256": _sha256(CONFIG_PATH),
@@ -200,7 +209,9 @@ def run_final_evaluation(
                 "partition_sha256": dev_meta["partition_sha256"],
                 "dev_rows": len(dev),
                 "reserved_rows": len(reserved),
-                "chosen_C": chosen_c,
+                "model_type": "stacking_logistic_lightgbm_xgboost_catboost",
+                "stacking_meta_logistic_C": STACKING_META_C,
+                "baseline_logistic_C": chosen_c,
                 "features": ALLOWED_PREDICTORS,
                 "mean_cltv_train": mean_cltv,
                 "reserved_evaluation_executed": True,

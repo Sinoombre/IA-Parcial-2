@@ -142,9 +142,8 @@ def test_development_inputs_generates_oracle_truth_from_development_only(
     )
     calls = []
     monkeypatch.setattr(cohort, "load_dev", lambda: (development, {"dev_count": 7}))
-    monkeypatch.setattr(cohort, "select_C", lambda *args: (0.1, None, None))
     monkeypatch.setattr(
-        cohort, "oof_predictions", lambda X, y, ids, C: np.full(len(X), 0.4)
+        cohort, "oof_stacking_predictions", lambda X, y: np.full(len(X), 0.4)
     )
 
     def oracle_for_development(frame, *, seed, target_mean):
@@ -173,3 +172,4 @@ def test_development_inputs_generates_oracle_truth_from_development_only(
     assert set(result[2]) == set(development["CustomerID"])
     assert result[3]["reserved_access"] is False
     assert result[3]["simulation_truth_source"] == "development_only_oof_oracle"
+    assert result[3]["model_type"] == "stacking_logistic_lightgbm_xgboost_catboost"

@@ -66,7 +66,7 @@ utility:
   cltv_relative_to: "mean_cltv_train"
 
 model:
-  base: "logistic_regression_l2"
+  base: "stacked_logistic_lightgbm_xgboost_catboost"
   cv_folds: 5
   selection_metric: "precision_at_15"
   tie_break_metric: "log_loss"

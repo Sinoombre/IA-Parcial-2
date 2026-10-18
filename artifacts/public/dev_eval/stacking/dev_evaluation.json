@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "dataset_sha256": "1bcbc0ccc9b352175216979102628e579cfbde2c3ff57b005de168a433122640",
+    "partition_sha256": "d7d8ca6501a7c2ad951f5b6991fe0756ad6df077cbdbcbef62e66e23e49c9514",
+    "total_charges_blank_count": 5,
+    "reserved_count": 1409,
+    "dev_count": 5634,
+    "rows_used": 5634,
+    "split": "development",
+    "reserved_access": false
+  },
+  "model_type": "stacking_logistic_lightgbm_xgboost_catboost",
+  "baseline_logistic_C": 10.0,
+  "probability_ranking": {
+    "precision": 0.7313609467455622,
+    "recall": 0.4133779264214047,
+    "lift": 2.7561789792404663,
+    "auc": 0.8588415439723778,
+    "brier": 0.13258281291510793,
+    "log_loss": 0.4107591933412643,
+    "ece": 0.03581595362811296
+  },
+  "baseline_logistic_probability_ranking": {
+    "precision": 0.7041420118343196,
+    "recall": 0.3979933110367893,
+    "lift": 2.653602738912747,
+    "auc": 0.8511102887049607,
+    "brier": 0.13394695249522331,
+    "log_loss": 0.41004136498461763,
+    "ece": 0.010272774944659651
+  },
+  "agent_utility_ranking": {
+    "precision": 0.6650887573964497,
+    "n_selected": 845,
+    "k": 845
+  },
+  "probability_with_utility_filter": {
+    "precision": 0.7313609467455622,
+    "n_selected": 845,
+    "k": 845
+  },
+  "spearman_p_churn_v": -0.22561250700977453,
+  "baseline_logistic_cv_summary": [
+    {
+      "C": 0.01,
+      "precision_mean": 0.711261388184465,
+      "precision_sd": 0.0041574452631634,
+      "log_loss_mean": 0.41984537987788234
+    },
+    {
+      "C": 0.03,
+      "precision_mean": 0.7096905231520617,
+      "precision_sd": 0.005415522496530756,
+      "log_loss_mean": 0.4136636278211358
+    },
+    {
+      "C": 0.1,
+      "precision_mean": 0.7104794777871701,
+      "precision_sd": 0.002476691639400532,
+      "log_loss_mean": 0.41103011010987567
+    },
+    {
+      "C": 0.3,
+      "precision_mean": 0.7104747816286278,
+      "precision_sd": 0.0017917998910593163,
+      "log_loss_mean": 0.4103092330678077
+    },
+    {
+      "C": 1.0,
+      "precision_mean": 0.7108739551047244,
+      "precision_sd": 0.0023494020412399294,
+      "log_loss_mean": 0.41022081802444993
+    },
+    {
+      "C": 3.0,
+      "precision_mean": 0.7092936977552361,
+      "precision_sd": 0.002435405362413228,
+      "log_loss_mean": 0.41022886760980154
+    },
+    {
+      "C": 10.0,
+      "precision_mean": 0.7092936977552361,
+      "precision_sd": 0.0029606700520118157,
+      "log_loss_mean": 0.41024682592185263
+    }
+  ]
+}

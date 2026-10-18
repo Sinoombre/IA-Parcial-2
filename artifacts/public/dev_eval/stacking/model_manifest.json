@@ -1,0 +1,28 @@
+{
+  "model_sha256": "e8a42af292ce8d9d0ebcb4ecd79c77c9d651414aae346e5b08abf03157ada325",
+  "dataset_sha256": "1bcbc0ccc9b352175216979102628e579cfbde2c3ff57b005de168a433122640",
+  "partition_sha256": "d7d8ca6501a7c2ad951f5b6991fe0756ad6df077cbdbcbef62e66e23e49c9514",
+  "config_sha256": "ec7cfc65f2cbabfea947803b33fdc353252db4f8814b0060c3b468040ddd21ab",
+  "thresholds_sha256": "d20c8a1b8c653084be6140fc66db9e905d232bf74377be4aef758c18b1c23d60",
+  "dev_rows": 5634,
+  "reserved_rows": 1409,
+  "model_type": "stacking_logistic_lightgbm_xgboost_catboost",
+  "stacking_meta_logistic_C": 10.0,
+  "baseline_logistic_C": 10.0,
+  "features": [
+    "Partner",
+    "Dependents",
+    "Internet Service",
+    "Contract",
+    "Paperless Billing",
+    "Payment Method",
+    "Tenure Months",
+    "Monthly Charges",
+    "Total Charges"
+  ],
+  "mean_cltv_train": 4387.761625843095,
+  "reserved_evaluation_executed": false,
+  "model_file": "model_v1.joblib",
+  "commit_hash": "d4bafef4dcc3d1068441026229783787411608e8",
+  "working_tree_clean": false
+}

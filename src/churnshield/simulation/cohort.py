@@ -13,8 +13,8 @@ from .crm import SimulatedCRM
 from .paths import evaluator_output_path
 from ..data import load_dev
 from ..decision import select_candidates
-from ..model import oof_predictions, select_C
 from ..oracle import oracle_oof_predictions
+from ..stacking import STACKING_META_C, oof_stacking_predictions
 from ..settings import agent_config
 from ..utility import add_utilities
 
@@ -162,8 +162,7 @@ def development_inputs() -> tuple[
         dev["Churn Value"].astype(int),
         dev["CustomerID"].astype(str),
     )
-    chosen_C, _, _ = select_C(X, y, ids)
-    p = oof_predictions(X, y, ids, chosen_C)
+    p = oof_stacking_predictions(X, y)
     simulation = agent_config()["simulation"]
     q_dev = oracle_oof_predictions(
         dev,
@@ -176,7 +175,8 @@ def development_inputs() -> tuple[
         dict(zip(ids, q_dev)),
         {
             **meta,
-            "chosen_C": chosen_C,
+            "model_type": "stacking_logistic_lightgbm_xgboost_catboost",
+            "stacking_meta_logistic_C": STACKING_META_C,
             "simulation_truth_source": "development_only_oof_oracle",
             "simulation_propensity_mean": float(np.mean(q_dev)),
             "reserved_access": False,

@@ -1,0 +1,562 @@
+{
+  "configured_seeds": {
+    "metric": "precision_at_15",
+    "capacity_fraction": 0.15,
+    "features": [
+      "Partner",
+      "Dependents",
+      "Internet Service",
+      "Contract",
+      "Paperless Billing",
+      "Payment Method",
+      "Tenure Months",
+      "Monthly Charges",
+      "Total Charges"
+    ],
+    "seeds": [
+      2006,
+      2007,
+      2008
+    ],
+    "outer_folds": 5,
+    "stacking_inner_folds": 3,
+    "stacking_meta_logistic_C": 10.0,
+    "versions": {
+      "scikit-learn": "1.5.2",
+      "lightgbm": "4.5.0",
+      "xgboost": "2.1.2",
+      "catboost": "1.2.7"
+    },
+    "candidates": [
+      {
+        "model": "logistic_l2",
+        "precision_at_15": 0.7065088757396449,
+        "fold_precision_mean": 0.7104794777871702,
+        "fold_precision_sd": 0.03062530047926109,
+        "folds": [
+          {
+            "seed": 2006,
+            "fold": 1,
+            "precision_at_15": 0.6804733727810651
+          },
+          {
+            "seed": 2006,
+            "fold": 2,
+            "precision_at_15": 0.6923076923076923
+          },
+          {
+            "seed": 2006,
+            "fold": 3,
+            "precision_at_15": 0.7633136094674556
+          },
+          {
+            "seed": 2006,
+            "fold": 4,
+            "precision_at_15": 0.7041420118343196
+          },
+          {
+            "seed": 2006,
+            "fold": 5,
+            "precision_at_15": 0.7023809523809523
+          },
+          {
+            "seed": 2007,
+            "fold": 1,
+            "precision_at_15": 0.6923076923076923
+          },
+          {
+            "seed": 2007,
+            "fold": 2,
+            "precision_at_15": 0.7337278106508875
+          },
+          {
+            "seed": 2007,
+            "fold": 3,
+            "precision_at_15": 0.7041420118343196
+          },
+          {
+            "seed": 2007,
+            "fold": 4,
+            "precision_at_15": 0.727810650887574
+          },
+          {
+            "seed": 2007,
+            "fold": 5,
+            "precision_at_15": 0.7083333333333334
+          },
+          {
+            "seed": 2008,
+            "fold": 1,
+            "precision_at_15": 0.6804733727810651
+          },
+          {
+            "seed": 2008,
+            "fold": 2,
+            "precision_at_15": 0.727810650887574
+          },
+          {
+            "seed": 2008,
+            "fold": 3,
+            "precision_at_15": 0.7692307692307693
+          },
+          {
+            "seed": 2008,
+            "fold": 4,
+            "precision_at_15": 0.7159763313609467
+          },
+          {
+            "seed": 2008,
+            "fold": 5,
+            "precision_at_15": 0.6547619047619048
+          }
+        ]
+      },
+      {
+        "model": "stacking_lgbm_xgb",
+        "precision_at_15": 0.7242603550295857,
+        "fold_precision_mean": 0.721151498074575,
+        "fold_precision_sd": 0.027637835699837063,
+        "folds": [
+          {
+            "seed": 2006,
+            "fold": 1,
+            "precision_at_15": 0.6982248520710059
+          },
+          {
+            "seed": 2006,
+            "fold": 2,
+            "precision_at_15": 0.7041420118343196
+          },
+          {
+            "seed": 2006,
+            "fold": 3,
+            "precision_at_15": 0.7218934911242604
+          },
+          {
+            "seed": 2006,
+            "fold": 4,
+            "precision_at_15": 0.7218934911242604
+          },
+          {
+            "seed": 2006,
+            "fold": 5,
+            "precision_at_15": 0.7083333333333334
+          },
+          {
+            "seed": 2007,
+            "fold": 1,
+            "precision_at_15": 0.7100591715976331
+          },
+          {
+            "seed": 2007,
+            "fold": 2,
+            "precision_at_15": 0.7514792899408284
+          },
+          {
+            "seed": 2007,
+            "fold": 3,
+            "precision_at_15": 0.7218934911242604
+          },
+          {
+            "seed": 2007,
+            "fold": 4,
+            "precision_at_15": 0.7455621301775148
+          },
+          {
+            "seed": 2007,
+            "fold": 5,
+            "precision_at_15": 0.7261904761904762
+          },
+          {
+            "seed": 2008,
+            "fold": 1,
+            "precision_at_15": 0.6745562130177515
+          },
+          {
+            "seed": 2008,
+            "fold": 2,
+            "precision_at_15": 0.7514792899408284
+          },
+          {
+            "seed": 2008,
+            "fold": 3,
+            "precision_at_15": 0.7810650887573964
+          },
+          {
+            "seed": 2008,
+            "fold": 4,
+            "precision_at_15": 0.7159763313609467
+          },
+          {
+            "seed": 2008,
+            "fold": 5,
+            "precision_at_15": 0.6845238095238095
+          }
+        ]
+      },
+      {
+        "model": "stacking_lgbm_xgb_catboost",
+        "precision_at_15": 0.7313609467455622,
+        "fold_precision_mean": 0.7211444538367616,
+        "fold_precision_sd": 0.028692003183777192,
+        "folds": [
+          {
+            "seed": 2006,
+            "fold": 1,
+            "precision_at_15": 0.7100591715976331
+          },
+          {
+            "seed": 2006,
+            "fold": 2,
+            "precision_at_15": 0.6982248520710059
+          },
+          {
+            "seed": 2006,
+            "fold": 3,
+            "precision_at_15": 0.727810650887574
+          },
+          {
+            "seed": 2006,
+            "fold": 4,
+            "precision_at_15": 0.7218934911242604
+          },
+          {
+            "seed": 2006,
+            "fold": 5,
+            "precision_at_15": 0.7142857142857143
+          },
+          {
+            "seed": 2007,
+            "fold": 1,
+            "precision_at_15": 0.7159763313609467
+          },
+          {
+            "seed": 2007,
+            "fold": 2,
+            "precision_at_15": 0.7514792899408284
+          },
+          {
+            "seed": 2007,
+            "fold": 3,
+            "precision_at_15": 0.727810650887574
+          },
+          {
+            "seed": 2007,
+            "fold": 4,
+            "precision_at_15": 0.7337278106508875
+          },
+          {
+            "seed": 2007,
+            "fold": 5,
+            "precision_at_15": 0.7023809523809523
+          },
+          {
+            "seed": 2008,
+            "fold": 1,
+            "precision_at_15": 0.6745562130177515
+          },
+          {
+            "seed": 2008,
+            "fold": 2,
+            "precision_at_15": 0.7455621301775148
+          },
+          {
+            "seed": 2008,
+            "fold": 3,
+            "precision_at_15": 0.7928994082840237
+          },
+          {
+            "seed": 2008,
+            "fold": 4,
+            "precision_at_15": 0.7159763313609467
+          },
+          {
+            "seed": 2008,
+            "fold": 5,
+            "precision_at_15": 0.6845238095238095
+          }
+        ]
+      }
+    ]
+  },
+  "robustness_seeds": {
+    "metric": "precision_at_15",
+    "capacity_fraction": 0.15,
+    "features": [
+      "Partner",
+      "Dependents",
+      "Internet Service",
+      "Contract",
+      "Paperless Billing",
+      "Payment Method",
+      "Tenure Months",
+      "Monthly Charges",
+      "Total Charges"
+    ],
+    "seeds": [
+      3101,
+      3102,
+      3103
+    ],
+    "outer_folds": 5,
+    "stacking_inner_folds": 3,
+    "stacking_meta_logistic_C": 10.0,
+    "versions": {
+      "scikit-learn": "1.5.2",
+      "lightgbm": "4.5.0",
+      "xgboost": "2.1.2",
+      "catboost": "1.2.7"
+    },
+    "candidates": [
+      {
+        "model": "logistic_l2",
+        "precision_at_15": 0.7041420118343196,
+        "fold_precision_mean": 0.7097233962618578,
+        "fold_precision_sd": 0.021111783646420978,
+        "folds": [
+          {
+            "seed": 3101,
+            "fold": 1,
+            "precision_at_15": 0.7514792899408284
+          },
+          {
+            "seed": 3101,
+            "fold": 2,
+            "precision_at_15": 0.6745562130177515
+          },
+          {
+            "seed": 3101,
+            "fold": 3,
+            "precision_at_15": 0.7041420118343196
+          },
+          {
+            "seed": 3101,
+            "fold": 4,
+            "precision_at_15": 0.727810650887574
+          },
+          {
+            "seed": 3101,
+            "fold": 5,
+            "precision_at_15": 0.6964285714285714
+          },
+          {
+            "seed": 3102,
+            "fold": 1,
+            "precision_at_15": 0.7159763313609467
+          },
+          {
+            "seed": 3102,
+            "fold": 2,
+            "precision_at_15": 0.6863905325443787
+          },
+          {
+            "seed": 3102,
+            "fold": 3,
+            "precision_at_15": 0.6982248520710059
+          },
+          {
+            "seed": 3102,
+            "fold": 4,
+            "precision_at_15": 0.7041420118343196
+          },
+          {
+            "seed": 3102,
+            "fold": 5,
+            "precision_at_15": 0.7380952380952381
+          },
+          {
+            "seed": 3103,
+            "fold": 1,
+            "precision_at_15": 0.7337278106508875
+          },
+          {
+            "seed": 3103,
+            "fold": 2,
+            "precision_at_15": 0.7100591715976331
+          },
+          {
+            "seed": 3103,
+            "fold": 3,
+            "precision_at_15": 0.7041420118343196
+          },
+          {
+            "seed": 3103,
+            "fold": 4,
+            "precision_at_15": 0.6863905325443787
+          },
+          {
+            "seed": 3103,
+            "fold": 5,
+            "precision_at_15": 0.7142857142857143
+          }
+        ]
+      },
+      {
+        "model": "stacking_lgbm_xgb",
+        "precision_at_15": 0.7195266272189349,
+        "fold_precision_mean": 0.7188057668826899,
+        "fold_precision_sd": 0.017781781120644966,
+        "folds": [
+          {
+            "seed": 3101,
+            "fold": 1,
+            "precision_at_15": 0.7455621301775148
+          },
+          {
+            "seed": 3101,
+            "fold": 2,
+            "precision_at_15": 0.7041420118343196
+          },
+          {
+            "seed": 3101,
+            "fold": 3,
+            "precision_at_15": 0.6923076923076923
+          },
+          {
+            "seed": 3101,
+            "fold": 4,
+            "precision_at_15": 0.7337278106508875
+          },
+          {
+            "seed": 3101,
+            "fold": 5,
+            "precision_at_15": 0.7023809523809523
+          },
+          {
+            "seed": 3102,
+            "fold": 1,
+            "precision_at_15": 0.7041420118343196
+          },
+          {
+            "seed": 3102,
+            "fold": 2,
+            "precision_at_15": 0.6982248520710059
+          },
+          {
+            "seed": 3102,
+            "fold": 3,
+            "precision_at_15": 0.7100591715976331
+          },
+          {
+            "seed": 3102,
+            "fold": 4,
+            "precision_at_15": 0.7159763313609467
+          },
+          {
+            "seed": 3102,
+            "fold": 5,
+            "precision_at_15": 0.75
+          },
+          {
+            "seed": 3103,
+            "fold": 1,
+            "precision_at_15": 0.727810650887574
+          },
+          {
+            "seed": 3103,
+            "fold": 2,
+            "precision_at_15": 0.7337278106508875
+          },
+          {
+            "seed": 3103,
+            "fold": 3,
+            "precision_at_15": 0.7337278106508875
+          },
+          {
+            "seed": 3103,
+            "fold": 4,
+            "precision_at_15": 0.7100591715976331
+          },
+          {
+            "seed": 3103,
+            "fold": 5,
+            "precision_at_15": 0.7202380952380952
+          }
+        ]
+      },
+      {
+        "model": "stacking_lgbm_xgb_catboost",
+        "precision_at_15": 0.7230769230769231,
+        "fold_precision_mean": 0.7219592373438526,
+        "fold_precision_sd": 0.016196856102459183,
+        "folds": [
+          {
+            "seed": 3101,
+            "fold": 1,
+            "precision_at_15": 0.7514792899408284
+          },
+          {
+            "seed": 3101,
+            "fold": 2,
+            "precision_at_15": 0.6982248520710059
+          },
+          {
+            "seed": 3101,
+            "fold": 3,
+            "precision_at_15": 0.7100591715976331
+          },
+          {
+            "seed": 3101,
+            "fold": 4,
+            "precision_at_15": 0.7514792899408284
+          },
+          {
+            "seed": 3101,
+            "fold": 5,
+            "precision_at_15": 0.7023809523809523
+          },
+          {
+            "seed": 3102,
+            "fold": 1,
+            "precision_at_15": 0.7159763313609467
+          },
+          {
+            "seed": 3102,
+            "fold": 2,
+            "precision_at_15": 0.7159763313609467
+          },
+          {
+            "seed": 3102,
+            "fold": 3,
+            "precision_at_15": 0.7218934911242604
+          },
+          {
+            "seed": 3102,
+            "fold": 4,
+            "precision_at_15": 0.7218934911242604
+          },
+          {
+            "seed": 3102,
+            "fold": 5,
+            "precision_at_15": 0.7380952380952381
+          },
+          {
+            "seed": 3103,
+            "fold": 1,
+            "precision_at_15": 0.7218934911242604
+          },
+          {
+            "seed": 3103,
+            "fold": 2,
+            "precision_at_15": 0.7159763313609467
+          },
+          {
+            "seed": 3103,
+            "fold": 3,
+            "precision_at_15": 0.7337278106508875
+          },
+          {
+            "seed": 3103,
+            "fold": 4,
+            "precision_at_15": 0.7041420118343196
+          },
+          {
+            "seed": 3103,
+            "fold": 5,
+            "precision_at_15": 0.7261904761904762
+          }
+        ]
+      }
+    ]
+  }
+}

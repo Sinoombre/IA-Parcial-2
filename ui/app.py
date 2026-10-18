@@ -27,7 +27,8 @@ from churnshield.utility import action_utility
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_PATH = Path(
     os.environ.get(
-        "CHURNSHIELD_MODEL", ROOT / "artifacts/public/dev_eval/model_v1.joblib"
+        "CHURNSHIELD_MODEL",
+        ROOT / "artifacts/public/dev_eval/stacking/model_v1.joblib",
     )
 )
 CARD_PATH = MODEL_PATH.with_name("model_card.json")

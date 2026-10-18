@@ -8,13 +8,25 @@ import numpy as np
 from scipy.stats import spearmanr
 from .data import REPO_ROOT, load_dev
 from .features import ALLOWED_PREDICTORS
-from .model import select_C, oof_predictions, make_pipeline
+from .model import oof_predictions, select_C
 from .metrics import precision_at_k, recall_at_k, lift_at_k, calibration_metrics
+from .stacking import (
+    STACKING_META_C,
+    STACKING_SEEDS,
+    make_stacking_pipeline,
+    oof_stacking_predictions,
+)
 from .utility import add_utilities
 from .decision import select_candidates
 from .settings import AGENT_CONFIG_PATH, THRESHOLDS_CONFIG_PATH
 
-ARTIFACT_DIR = Path(__file__).resolve().parents[2] / "artifacts" / "public" / "dev_eval"
+ARTIFACT_DIR = (
+    Path(__file__).resolve().parents[2]
+    / "artifacts"
+    / "public"
+    / "dev_eval"
+    / "stacking"
+)
 
 
 def run_dev_eval(*, output_dir: str | Path = ARTIFACT_DIR):
@@ -23,8 +35,9 @@ def run_dev_eval(*, output_dir: str | Path = ARTIFACT_DIR):
     X = df[list(ALLOWED_PREDICTORS)].copy()
     y = df["Churn Value"].astype(int)
     ids = df["CustomerID"].astype(str)
-    chosen_c, cv_table, cv_summary = select_C(X, y, ids)
-    p = oof_predictions(X, y, ids, chosen_c)
+    chosen_c, cv_table, cv_summary = select_C(X, y, ids, seeds=STACKING_SEEDS)
+    baseline_p = oof_predictions(X, y, ids, chosen_c, seeds=STACKING_SEEDS)
+    p = oof_stacking_predictions(X, y, seeds=STACKING_SEEDS)
     mean_cltv = float(df["CLTV"].mean())
     rows = [
         {
@@ -43,6 +56,12 @@ def run_dev_eval(*, output_dir: str | Path = ARTIFACT_DIR):
         "lift": lift_at_k(y, p, ids)[0],
         **calibration_metrics(y, p),
     }
+    baseline_metrics = {
+        "precision": precision_at_k(y, baseline_p, ids)[0],
+        "recall": recall_at_k(y, baseline_p, ids)[0],
+        "lift": lift_at_k(y, baseline_p, ids)[0],
+        **calibration_metrics(y, baseline_p),
+    }
     y_by_id = dict(zip(ids, y.to_numpy()))
 
     def selected_precision(result):
@@ -58,8 +77,10 @@ def run_dev_eval(*, output_dir: str | Path = ARTIFACT_DIR):
 
     out = {
         "metadata": meta,
-        "chosen_C": chosen_c,
+        "model_type": "stacking_logistic_lightgbm_xgboost_catboost",
+        "baseline_logistic_C": chosen_c,
         "probability_ranking": prob_metrics,
+        "baseline_logistic_probability_ranking": baseline_metrics,
         "agent_utility_ranking": {
             "precision": selected_precision(utility_policy),
             "n_selected": int(utility_policy["n_selected"]),
@@ -71,7 +92,7 @@ def run_dev_eval(*, output_dir: str | Path = ARTIFACT_DIR):
             "k": int(probability_policy["k"]),
         },
         "spearman_p_churn_v": float(spearmanr(p, df["CLTV"] / mean_cltv).statistic),
-        "cv_summary": cv_summary.to_dict(orient="records"),
+        "baseline_logistic_cv_summary": cv_summary.to_dict(orient="records"),
     }
     output_path = Path(output_dir).expanduser().resolve()
     commit_hash = _git_commit()
@@ -80,8 +101,8 @@ def run_dev_eval(*, output_dir: str | Path = ARTIFACT_DIR):
     (output_path / "dev_evaluation.json").write_text(
         json.dumps(out, indent=2, default=float), encoding="utf-8"
     )
-    cv_table.to_csv(output_path / "cv_results.csv", index=False)
-    final = make_pipeline(chosen_c)
+    cv_table.to_csv(output_path / "baseline_logistic_cv_results.csv", index=False)
+    final = make_stacking_pipeline(random_state=1702, include_catboost=True)
     final.fit(X, y)
     import joblib
 
@@ -100,7 +121,9 @@ def run_dev_eval(*, output_dir: str | Path = ARTIFACT_DIR):
         "thresholds_sha256": sha256(THRESHOLDS_CONFIG_PATH),
         "dev_rows": len(df),
         "reserved_rows": meta["reserved_count"],
-        "chosen_C": chosen_c,
+        "model_type": "stacking_logistic_lightgbm_xgboost_catboost",
+        "stacking_meta_logistic_C": STACKING_META_C,
+        "baseline_logistic_C": chosen_c,
         "features": list(ALLOWED_PREDICTORS),
         "mean_cltv_train": mean_cltv,
         "reserved_evaluation_executed": False,

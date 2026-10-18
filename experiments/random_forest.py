@@ -35,7 +35,7 @@ from churnshield.data import load_dev
 
 NUMERIC = ["Tenure Months", "Monthly Charges", "Total Charges"]
 CATEGORICAL = [c for c in ALLOWED_PREDICTORS if c not in NUMERIC]
-RF_SEEDS = (1702, 1703, 1704)
+RF_SEEDS = (2006, 2007, 2008)
 RF_CONFIGS = {
     "rf_base": {
         "n_estimators": 200,

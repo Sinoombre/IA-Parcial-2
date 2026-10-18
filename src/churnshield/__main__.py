@@ -17,7 +17,9 @@ def main() -> None:
     dev_evaluation = sub.add_parser(
         "dev-eval", help="entrena y evalúa usando únicamente desarrollo"
     )
-    dev_evaluation.add_argument("--output-dir", default="artifacts/public/dev_eval")
+    dev_evaluation.add_argument(
+        "--output-dir", default="artifacts/public/dev_eval/stacking"
+    )
     simulation = sub.add_parser(
         "simulate", help="ejecuta la simulación longitudinal de cohortes"
     )

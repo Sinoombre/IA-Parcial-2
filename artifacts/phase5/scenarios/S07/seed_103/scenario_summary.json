@@ -1,0 +1,16 @@
+{
+  "scenario": "S07",
+  "synthetic": true,
+  "unknown_category": false,
+  "missing_cell_count": 0,
+  "imputed_missing_count": 0,
+  "seed": 103,
+  "cycles": 1,
+  "r_hat_final": 0.36769394261424015,
+  "records": 50,
+  "output_dir": "artifacts\\phase5\\scenarios\\S07\\seed_103",
+  "crm_statuses": [
+    "accepted",
+    "not_sent"
+  ]
+}

@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 
 from .crm import SimulatedCRM
+from .paths import evaluator_output_path
 from ..data import load_dev, _read_and_validate
 from ..decision import select_candidates
 from ..model import oof_predictions, select_C
@@ -182,14 +183,18 @@ def run_simulation(
     *,
     repetition_seed: int = 101,
     output_dir: str | Path = "artifacts/cohort_simulation",
+    evaluator_output_dir: str | Path | None = None,
 ) -> dict:
 
+    evaluator_root = evaluator_output_path(output_dir, evaluator_output_dir)
     dev, p, q, meta = development_inputs()
     public, truth = simulate_cohort(dev, p, q, repetition_seed=repetition_seed)
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(public).to_csv(out / "cohort_public.csv", index=False)
-    pd.DataFrame(truth).to_csv(out / "evaluator_truth.csv", index=False)
+    truth_out = evaluator_root / "cohort_simulation"
+    truth_out.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(truth).to_csv(truth_out / "evaluator_truth.csv", index=False)
 
     summary = {
         "repetition_seed": repetition_seed,
@@ -199,7 +204,7 @@ def run_simulation(
         "oracle_population_mean": meta["oracle_population_mean"],
         "r_action": 0.25,
         "r_true_evaluator_only": 0.35,
-        "truth_file": str(out / "evaluator_truth.csv"),
+        "truth_file": str(truth_out / "evaluator_truth.csv"),
     }
 
     (out / "simulation_summary.json").write_text(json.dumps(summary, indent=2))

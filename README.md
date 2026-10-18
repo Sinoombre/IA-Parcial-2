@@ -19,3 +19,9 @@ fuente en la ruta de importación y corre el CLI:
 $env:PYTHONPATH = "src"
 python -m churnshield scenarios --scenario S02 --seed 101
 ```
+
+Los logs operativos se escriben en `artifacts/scenarios/` y la verdad del
+evaluador, por separado, en `artifacts/evaluator_truth/`. Se puede cambiar el
+destino con `--evaluator-output-dir`; debe ser una ruta separada del directorio
+de resultados operativos. Para la simulación de cohortes, `simulate` ofrece la
+misma opción.

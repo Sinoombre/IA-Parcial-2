@@ -3,3 +3,4 @@ __pycache__/
 .ruff_cache/
 pytest.ini
 .venv
+artifacts/evaluator_truth/

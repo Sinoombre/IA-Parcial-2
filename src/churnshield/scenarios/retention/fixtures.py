@@ -25,11 +25,17 @@ def build_fixture(
     elif scenario.cltv_pattern == "low":
         cltv[:] = 100.0
 
+    missing_count = 0
     if scenario.missing_first_cltv:
-        cltv[0] = np.nan
+        missing_count = max(1, int(np.ceil(scenario.customer_count * 0.05)))
+        cltv[:missing_count] = np.nan
 
-    df = pd.DataFrame({"CustomerID": ids, "CLTV": cltv, "Churn Value": historical})
+    df = pd.DataFrame(
+        {"CustomerID": ids, "CLTV": cltv, "Churn Value": historical}
+    )
+    imputed_count = 0
     if scenario.missing_first_cltv:
+        imputed_count = int(df["CLTV"].isna().sum())
         df["CLTV"] = df["CLTV"].fillna(df["CLTV"].median())
 
     propensities = np.full(scenario.customer_count, scenario.churn_rate)
@@ -41,5 +47,7 @@ def build_fixture(
             "scenario": scenario.scenario_id,
             "synthetic": True,
             "unknown_category": scenario.unknown_category,
+            "missing_cell_count": missing_count,
+            "imputed_missing_count": imputed_count,
         },
     )

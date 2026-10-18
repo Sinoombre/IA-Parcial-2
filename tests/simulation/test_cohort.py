@@ -1,3 +1,4 @@
+from churnshield.simulation import cohort
 from churnshield.simulation.cohort import simulate_cohort
 
 
@@ -36,3 +37,27 @@ def test_cycle_one_uses_empirical_churn_and_absorbs_cancelled_clients(
     assert cycle_one["D"]["would_churn"] == 1
     assert "A" not in cycle_two_ids
     assert "D" not in cycle_two_ids
+
+
+def test_run_simulation_writes_evaluator_truth_separately(
+    tmp_path, small_df, monkeypatch
+):
+    ids = small_df["CustomerID"].astype(str).tolist()
+    inputs = (
+        small_df,
+        dict(zip(ids, [0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2])),
+        dict(zip(ids, [0.2] * len(ids))),
+        {"oracle_population_mean": 0.2},
+    )
+    monkeypatch.setattr(cohort, "development_inputs", lambda: inputs)
+
+    result = cohort.run_simulation(output_dir=tmp_path / "public")
+
+    public_dir = tmp_path / "public"
+    evaluator_file = (
+        tmp_path / "evaluator_truth" / "cohort_simulation" / "evaluator_truth.csv"
+    )
+    assert (public_dir / "cohort_public.csv").exists()
+    assert not (public_dir / "evaluator_truth.csv").exists()
+    assert evaluator_file.exists()
+    assert result["truth_file"] == str(evaluator_file)

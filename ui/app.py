@@ -9,12 +9,14 @@ from __future__ import annotations
 import json
 import math
 import os
+from functools import lru_cache
 from pathlib import Path
 
 import joblib
 import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, render_template, request
+from werkzeug.exceptions import BadRequest
 
 from churnshield.data import load_dev
 from churnshield.features import ALLOWED_PREDICTORS
@@ -50,10 +52,28 @@ MAX_GROUP_SIZE = 500
 app = Flask(__name__)
 
 
+@lru_cache(maxsize=4)
+def _read_model_card(path: str, _modified_ns: int, _size: int) -> dict:
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
 def _model_card() -> dict:
-    if CARD_PATH.exists():
-        return json.loads(CARD_PATH.read_text(encoding="utf-8"))
-    return {"mean_cltv_train": 1.0, "reserved_evaluation_executed": False}
+    if not CARD_PATH.exists():
+        raise FileNotFoundError(
+            f"No existe {CARD_PATH}. Ejecuta `PYTHONPATH=src python -m churnshield dev-eval`."
+        )
+    stat = CARD_PATH.stat()
+    try:
+        return _read_model_card(str(CARD_PATH), stat.st_mtime_ns, stat.st_size)
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"La tarjeta del modelo no contiene JSON válido: {CARD_PATH}"
+        ) from exc
+
+
+@lru_cache(maxsize=4)
+def _load_model_from_path(path: str, _modified_ns: int, _size: int):
+    return joblib.load(path)
 
 
 def _load_model():
@@ -61,7 +81,8 @@ def _load_model():
         raise FileNotFoundError(
             f"No existe {MODEL_PATH}. Ejecuta `PYTHONPATH=src python -m churnshield dev-eval`."
         )
-    return joblib.load(MODEL_PATH)
+    stat = MODEL_PATH.stat()
+    return _load_model_from_path(str(MODEL_PATH), stat.st_mtime_ns, stat.st_size)
 
 
 def _coerce_payload(payload: dict) -> dict:
@@ -70,7 +91,10 @@ def _coerce_payload(payload: dict) -> dict:
     if missing:
         raise ValueError(f"Faltan campos permitidos: {missing}")
     for field in NUMERIC_FIELDS:
-        values[field] = float(values[field])
+        try:
+            values[field] = float(values[field])
+        except (OverflowError, TypeError, ValueError) as exc:
+            raise ValueError(f"{field} debe ser un número finito.") from exc
         if not math.isfinite(values[field]):
             raise ValueError(f"{field} debe ser un número finito.")
     if not 0 <= values["Tenure Months"] <= 72:
@@ -153,8 +177,17 @@ def sample_profiles():
 @app.post("/api/predict")
 def predict():
     try:
-        payload = request.get_json(silent=True) or {}
-        if isinstance(payload, dict) and "profiles" in payload:
+        if not request.is_json:
+            raise ValueError("El cuerpo de la solicitud debe ser JSON.")
+        try:
+            payload = request.get_json()
+        except BadRequest as exc:
+            raise ValueError(
+                "El cuerpo de la solicitud no contiene JSON válido."
+            ) from exc
+        if not isinstance(payload, dict):
+            raise ValueError("El cuerpo JSON debe ser un objeto.")
+        if "profiles" in payload:
             profiles = payload["profiles"]
             if (
                 not isinstance(profiles, list)
@@ -183,7 +216,9 @@ def predict():
                 "Riesgo estimado, no causalidad; esta interfaz no usa la reserva."
             ),
         }
-    except (FileNotFoundError, ValueError, TypeError) as exc:
+    except FileNotFoundError as exc:
+        return jsonify({"error": str(exc)}), 503
+    except (ValueError, TypeError) as exc:
         return jsonify({"error": str(exc)}), 400
 
 
@@ -192,7 +227,14 @@ def _predict_profiles(named_values: list[tuple[str, dict]]) -> dict:
     features = pd.DataFrame([values for _, values in named_values])
     probabilities = model.predict_proba(features)[:, 1]
     card = _model_card()
-    mean_cltv = float(card.get("mean_cltv_train") or 1.0)
+    try:
+        mean_cltv = float(card["mean_cltv_train"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError(
+            "La tarjeta del modelo debe incluir un mean_cltv_train válido."
+        ) from exc
+    if not math.isfinite(mean_cltv) or mean_cltv <= 0:
+        raise ValueError("mean_cltv_train debe ser finito y positivo.")
     predictions = []
     for (name, values), probability in zip(named_values, probabilities):
         p_churn = float(probability)

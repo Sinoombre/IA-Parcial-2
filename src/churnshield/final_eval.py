@@ -28,8 +28,12 @@ def _sha256(path: Path) -> str:
 
 
 def _bootstrap_precision(labels: np.ndarray, *, seeds=range(1, 11)) -> list[float]:
+    labels = np.asarray(labels)
+    if labels.ndim != 1 or not np.all(np.isin(labels, [0, 1])):
+        raise ValueError("labels debe ser un arreglo unidimensional de valores 0 o 1")
     if len(labels) == 0:
         return []
+    labels = np.sort(labels.astype(int))
     rng_values = []
     for seed in seeds:
         rng = np.random.default_rng(seed)

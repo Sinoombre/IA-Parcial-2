@@ -36,6 +36,10 @@ permissions:
 jobs:
   evaluate:
     runs-on: ubuntu-latest
+    env:
+      RUN_ROOT: artifacts/runs/${{ github.run_id }}-${{ github.run_attempt }}
+      SCENARIO_DIR: artifacts/runs/${{ github.run_id }}-${{ github.run_attempt }}/scenarios
+      TRUTH_DIR: artifacts/runs/${{ github.run_id }}-${{ github.run_attempt }}/evaluator_truth
 
     steps:
       - name: Check out repository
@@ -56,12 +60,17 @@ jobs:
           SEED: ${{ inputs.seed }}
           ALL_SEEDS: ${{ inputs.all_seeds }}
         run: |
+          if [[ -e "$RUN_ROOT" ]]; then
+            echo "Run directory already exists: $RUN_ROOT" >&2
+            exit 1
+          fi
           if [[ ! "$SEED" =~ ^[0-9]+$ ]]; then
             echo "Seed must be a non-negative integer." >&2
             exit 1
           fi
+          mkdir -p "$SCENARIO_DIR" "$TRUTH_DIR"
 
-          args=(scenarios --seed "$SEED" --output-dir artifacts/scenarios --evaluator-output-dir artifacts/evaluator_truth)
+          args=(scenarios --seed "$SEED" --output-dir "$SCENARIO_DIR" --evaluator-output-dir "$TRUTH_DIR")
           if [[ "$SCENARIO" == "all" ]]; then
             args+=(--all)
           else
@@ -73,6 +82,21 @@ jobs:
 
           python -m churnshield "${args[@]}"
 
+          if [[ "$SCENARIO" == "all" ]]; then
+            scenarios=(S02 S03 S04 S05 S06 S07 S08 S09 S10)
+          else
+            scenarios=("$SCENARIO")
+          fi
+          if [[ "$ALL_SEEDS" == "true" ]]; then
+            seeds=(101 102 103 104 105)
+          else
+            seeds=("$SEED")
+          fi
+          expected_args=(--expected-scenarios "${scenarios[@]}" --expected-seeds "${seeds[@]}")
+          python -m churnshield evaluate \
+            --input-dir "$SCENARIO_DIR" \
+            --output "$RUN_ROOT/evaluation.json" \
+            "${expected_args[@]}"
       - name: Evaluate M2 and M3
         env:
           PYTHONPATH: src
@@ -85,7 +109,9 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: scenario-results-${{ github.run_id }}
-          path: artifacts/
+          name: scenario-results-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ env.SCENARIO_DIR }}/
+            ${{ env.RUN_ROOT }}/evaluation.json
           if-no-files-found: warn
           retention-days: 14

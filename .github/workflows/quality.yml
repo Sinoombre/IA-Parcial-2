@@ -34,9 +34,13 @@ jobs:
         run: >-
           python -m ruff format --check
           src/churnshield/scenarios src/churnshield/simulation
-          tests/scenarios tests/simulation ui
+          tests/scenarios tests/simulation tests/modeling tests/ui ui
           src/churnshield/evaluation.py src/churnshield/final_eval.py
-          src/churnshield/robustness.py tests/evaluation tests/final
+          src/churnshield/robustness.py src/churnshield/data.py
+          src/churnshield/settings.py src/churnshield/features.py
+          src/churnshield/model.py src/churnshield/dev_eval.py
+          src/churnshield/protocol.py src/churnshield/__main__.py
+          src/churnshield/perception.py tests/evaluation tests/final
 
       - name: Run tests
         env:

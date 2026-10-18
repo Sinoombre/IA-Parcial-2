@@ -7,17 +7,21 @@ Este módulo nunca carga la partición reservada. Usa únicamente el modelo de
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 import os
+import pickle
 from pathlib import Path
 
 import joblib
 import numpy as np
 import pandas as pd
 from flask import Flask, jsonify, render_template, request
+from werkzeug.exceptions import BadRequest, UnsupportedMediaType
 
 from churnshield.data import load_dev
 from churnshield.features import ALLOWED_PREDICTORS
+from churnshield.settings import AGENT_CONFIG_PATH, THRESHOLDS_CONFIG_PATH
 from churnshield.utility import action_utility
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,15 +32,7 @@ CARD_PATH = MODEL_PATH.with_name("model_card.json")
 DEFAULTS = {
     "Partner": "No",
     "Dependents": "No",
-    "Phone Service": "Yes",
-    "Multiple Lines": "No phone service",
     "Internet Service": "DSL",
-    "Online Security": "No",
-    "Online Backup": "No",
-    "Device Protection": "No",
-    "Tech Support": "No",
-    "Streaming TV": "No",
-    "Streaming Movies": "No",
     "Contract": "Month-to-month",
     "Paperless Billing": "Yes",
     "Payment Method": "Electronic check",
@@ -50,21 +46,81 @@ MAX_GROUP_SIZE = 500
 app = Flask(__name__)
 
 
+class ArtifactUnavailable(RuntimeError):
+    """The development model artifact cannot safely serve predictions."""
+
+
 def _model_card() -> dict:
-    if CARD_PATH.exists():
-        return json.loads(CARD_PATH.read_text(encoding="utf-8"))
-    return {"mean_cltv_train": 1.0, "reserved_evaluation_executed": False}
+    if not CARD_PATH.is_file():
+        raise ArtifactUnavailable(
+            f"No existe {CARD_PATH}. Ejecuta `PYTHONPATH=src python -m churnshield dev-eval`."
+        )
+    try:
+        card = json.loads(CARD_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ArtifactUnavailable("El model card falta o no es JSON válido.") from exc
+    if not isinstance(card, dict):
+        raise ArtifactUnavailable("El model card debe contener un objeto JSON.")
+    return card
+
+
+def _validated_model_card() -> dict:
+    card = _model_card()
+    if (
+        card.get("features") != list(ALLOWED_PREDICTORS)
+        or card.get("reserved_evaluation_executed") is not False
+    ):
+        raise ArtifactUnavailable(
+            "El model card no coincide con el contrato de features."
+        )
+    for key, path in (
+        ("config_sha256", AGENT_CONFIG_PATH),
+        ("thresholds_sha256", THRESHOLDS_CONFIG_PATH),
+    ):
+        if card.get(key) != _sha256(path):
+            raise ArtifactUnavailable(
+                f"El hash {key} no coincide con la configuración."
+            )
+    try:
+        mean_cltv = float(card["mean_cltv_train"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ArtifactUnavailable(
+            "El model card no tiene mean_cltv_train válido."
+        ) from exc
+    if not math.isfinite(mean_cltv) or mean_cltv <= 0:
+        raise ArtifactUnavailable("mean_cltv_train debe ser positivo y finito.")
+    return card
+
+
+def _sha256(path: Path) -> str:
+    try:
+        with path.open("rb") as handle:
+            return hashlib.file_digest(handle, "sha256").hexdigest()
+    except OSError as exc:
+        raise ArtifactUnavailable(f"No se pudo validar el artefacto {path}.") from exc
 
 
 def _load_model():
-    if not MODEL_PATH.exists():
-        raise FileNotFoundError(
+    if not MODEL_PATH.is_file():
+        raise ArtifactUnavailable(
             f"No existe {MODEL_PATH}. Ejecuta `PYTHONPATH=src python -m churnshield dev-eval`."
         )
-    return joblib.load(MODEL_PATH)
+    card = _validated_model_card()
+    if card.get("model_sha256") != _sha256(MODEL_PATH):
+        raise ArtifactUnavailable("El modelo no coincide con el model card.")
+    try:
+        model = joblib.load(MODEL_PATH)
+    except (OSError, EOFError, ValueError, pickle.UnpicklingError, ImportError) as exc:
+        raise ArtifactUnavailable(
+            "El artefacto del modelo no se puede cargar."
+        ) from exc
+    return model
 
 
 def _coerce_payload(payload: dict) -> dict:
+    unexpected = sorted(set(payload) - set(ALLOWED_PREDICTORS))
+    if unexpected:
+        raise ValueError(f"Campos no permitidos: {unexpected}")
     values = {**DEFAULTS, **payload}
     missing = [field for field in ALLOWED_PREDICTORS if field not in values]
     if missing:
@@ -152,8 +208,12 @@ def sample_profiles():
 
 @app.post("/api/predict")
 def predict():
+    if not request.is_json:
+        return jsonify({"error": "El cuerpo debe enviarse como JSON."}), 400
     try:
-        payload = request.get_json(silent=True) or {}
+        payload = request.get_json(silent=False)
+        if not isinstance(payload, dict) or not payload:
+            raise ValueError("El cuerpo JSON debe ser un objeto no vacío.")
         if isinstance(payload, dict) and "profiles" in payload:
             profiles = payload["profiles"]
             if (
@@ -169,7 +229,11 @@ def predict():
                 if not isinstance(item, dict):
                     raise ValueError("Cada perfil del grupo debe ser un objeto.")
                 name = str(item.get("name") or f"Perfil {index:02d}")
-                values = _coerce_payload(item.get("values", item))
+                profile_values = item.get(
+                    "values",
+                    {key: value for key, value in item.items() if key != "name"},
+                )
+                values = _coerce_payload(profile_values)
                 named_values.append((name, values))
             return _predict_group(named_values)
 
@@ -183,16 +247,20 @@ def predict():
                 "Riesgo estimado, no causalidad; esta interfaz no usa la reserva."
             ),
         }
-    except (FileNotFoundError, ValueError, TypeError) as exc:
+    except (BadRequest, UnsupportedMediaType):
+        return jsonify({"error": "El cuerpo JSON está malformado."}), 400
+    except ArtifactUnavailable as exc:
+        return jsonify({"error": str(exc)}), 503
+    except (ValueError, TypeError) as exc:
         return jsonify({"error": str(exc)}), 400
 
 
 def _predict_profiles(named_values: list[tuple[str, dict]]) -> dict:
     model = _load_model()
+    card = _validated_model_card()
     features = pd.DataFrame([values for _, values in named_values])
     probabilities = model.predict_proba(features)[:, 1]
-    card = _model_card()
-    mean_cltv = float(card.get("mean_cltv_train") or 1.0)
+    mean_cltv = float(card["mean_cltv_train"])
     predictions = []
     for (name, values), probability in zip(named_values, probabilities):
         p_churn = float(probability)

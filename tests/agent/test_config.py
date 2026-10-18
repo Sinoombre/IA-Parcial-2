@@ -13,8 +13,19 @@ def test_config_has_initial_agent_contract():
     assert config["selection"]["capacity_rule"].startswith("floor")
     assert config["agent_run"]["scenario"] == "S03"
     assert config["agent_run"]["models_trained"] is False
-    assert config["simulation"]["status"] == "implemented_phase4"
-    assert config["learning"]["status"] == "implemented_phase4"
-    assert config["crm"]["status"] == "implemented_phase4"
+    assert config["simulation"]["status"] == "implemented"
+    assert config["learning"]["status"] == "implemented"
+    assert config["crm"]["status"] == "implemented"
     assert config["agent_run"]["simulator_implemented"] is True
     assert config["agent_run"]["learning_implemented"] is True
+    assert len(config["features"]["allowed_predictors"]) == 9
+    assert set(config["features"]["excluded_by_design"]) == {
+        "Phone Service",
+        "Multiple Lines",
+        "Online Security",
+        "Online Backup",
+        "Device Protection",
+        "Tech Support",
+        "Streaming TV",
+        "Streaming Movies",
+    }

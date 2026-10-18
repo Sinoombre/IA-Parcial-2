@@ -1,3 +1,6 @@
+import numpy as np
+import pytest
+
 from churnshield.simulation import cohort
 from churnshield.simulation.cohort import simulate_cohort
 
@@ -47,7 +50,10 @@ def test_run_simulation_writes_evaluator_truth_separately(
         small_df,
         dict(zip(ids, [0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2])),
         dict(zip(ids, [0.2] * len(ids))),
-        {"oracle_population_mean": 0.2},
+        {
+            "simulation_truth_source": "development_only_oof_oracle",
+            "simulation_propensity_mean": 0.2,
+        },
     )
     monkeypatch.setattr(cohort, "development_inputs", lambda: inputs)
 
@@ -61,3 +67,66 @@ def test_run_simulation_writes_evaluator_truth_separately(
     assert not (public_dir / "evaluator_truth.csv").exists()
     assert evaluator_file.exists()
     assert result["truth_file"] == str(evaluator_file)
+
+
+def test_development_inputs_generates_oracle_truth_from_development_only(
+    small_df, monkeypatch
+):
+    import pandas as pd
+
+    from churnshield import data
+    from churnshield.features import ALLOWED_PREDICTORS
+
+    development = pd.DataFrame(
+        [
+            {
+                **{feature: 1 for feature in ALLOWED_PREDICTORS},
+                "CustomerID": customer_id,
+                "CLTV": 100.0 + index,
+                "Churn Value": index % 2,
+                "Gender": "Female",
+                "Senior Citizen": 0,
+                "Country": "US",
+                "State": "CA",
+                "City": "City",
+                "Zip Code": 90000 + index,
+                "Lat Long": "0,0",
+                "Latitude": 0.0,
+                "Longitude": 0.0,
+            }
+            for index, customer_id in enumerate(small_df["CustomerID"])
+        ]
+    )
+    calls = []
+    monkeypatch.setattr(cohort, "load_dev", lambda: (development, {"dev_count": 7}))
+    monkeypatch.setattr(cohort, "select_C", lambda *args: (0.1, None, None))
+    monkeypatch.setattr(
+        cohort, "oof_predictions", lambda X, y, ids, C: np.full(len(X), 0.4)
+    )
+
+    def oracle_for_development(frame, *, seed, target_mean):
+        calls.append((frame, seed, target_mean))
+        return np.full(len(frame), target_mean)
+
+    monkeypatch.setattr(cohort, "oracle_oof_predictions", oracle_for_development)
+    monkeypatch.setattr(
+        data,
+        "_read_data_rows",
+        lambda indices, *, split: pytest.fail(
+            f"Unexpected dataset split access: {split}"
+        ),
+    )
+    monkeypatch.setattr(
+        data,
+        "load_reserved",
+        lambda **kwargs: pytest.fail("simulate must not access reserved data"),
+    )
+
+    result = cohort.development_inputs()
+
+    assert len(calls) == 1
+    assert calls[0][0] is development
+    assert len(result[0]) == 7
+    assert set(result[2]) == set(development["CustomerID"])
+    assert result[3]["reserved_access"] is False
+    assert result[3]["simulation_truth_source"] == "development_only_oof_oracle"

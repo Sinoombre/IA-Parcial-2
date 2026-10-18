@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 
 import numpy as np
 
@@ -30,14 +31,28 @@ class SimulatedCRM:
         timeout_retries: int = 1,
     ):
         rates = [timeout_rate, rejected_rate, error_rate]
-        if any(not 0 <= float(x) <= 1 for x in rates) or sum(rates) > 1:
+        try:
+            normalized_rates = [float(rate) for rate in rates]
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ValueError("las tasas del CRM deben ser numéricas") from exc
+        if (
+            any(
+                not math.isfinite(rate) or not 0 <= rate <= 1
+                for rate in normalized_rates
+            )
+            or sum(normalized_rates) > 1
+        ):
             raise ValueError(
                 "las tasas del CRM deben estar en [0,1] y sumar como máximo 1"
             )
-        self.timeout_rate = float(timeout_rate)
-        self.rejected_rate = float(rejected_rate)
-        self.error_rate = float(error_rate)
-        self.timeout_retries = int(timeout_retries)
+        self.timeout_rate, self.rejected_rate, self.error_rate = normalized_rates
+        try:
+            retry_count = int(timeout_retries)
+        except (OverflowError, TypeError, ValueError) as exc:
+            raise ValueError("timeout_retries debe ser un entero") from exc
+        if isinstance(timeout_retries, bool) or retry_count != timeout_retries:
+            raise ValueError("timeout_retries debe ser un entero")
+        self.timeout_retries = retry_count
         if self.timeout_retries < 0:
             raise ValueError("timeout_retries no puede ser negativo")
         self._results: dict[str, CRMResult] = {}
@@ -58,8 +73,18 @@ class SimulatedCRM:
         self, campaign_id: str, customer_id: str, rng: np.random.Generator
     ) -> CRMResult:
         """Envía una campaña; repetir el mismo ID nunca crea una segunda acción."""
+        if not isinstance(campaign_id, str) or not campaign_id.strip():
+            raise ValueError("campaign_id debe ser una cadena no vacía")
+        if customer_id is None:
+            raise ValueError("customer_id debe ser una cadena no vacía")
+        customer_id = str(customer_id)
+        if not customer_id.strip():
+            raise ValueError("customer_id debe ser una cadena no vacía")
         if campaign_id in self._results:
-            return self._results[campaign_id]
+            result = self._results[campaign_id]
+            if result.customer_id != customer_id:
+                raise ValueError("campaign_id no se puede reutilizar para otro cliente")
+            return result
         attempts = 0
         outcome = "timeout"
         first_outcome = ""
@@ -76,7 +101,7 @@ class SimulatedCRM:
         final_status = "crm_error" if outcome == "timeout" and attempts > 1 else outcome
         result = CRMResult(
             campaign_id=campaign_id,
-            customer_id=str(customer_id),
+            customer_id=customer_id,
             outcome=outcome,
             attempts=attempts,
             executed=(outcome == "accepted"),

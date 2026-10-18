@@ -11,10 +11,11 @@ import pandas as pd
 
 from .crm import SimulatedCRM
 from .paths import evaluator_output_path
-from ..data import load_dev, _read_and_validate
+from ..data import load_dev
 from ..decision import select_candidates
 from ..model import oof_predictions, select_C
-from ..oracle import oracle_oof_predictions, subset_by_customer_id
+from ..oracle import oracle_oof_predictions
+from ..settings import agent_config
 from ..utility import add_utilities
 
 
@@ -152,28 +153,33 @@ def simulate_cohort(
 def development_inputs() -> tuple[
     pd.DataFrame, dict[str, float], dict[str, float], dict
 ]:
-    """Prepara la cohorte de 5.634 con p OOF y q oculto de la población completa."""
+    """Prepare OOF propensities and synthetic truth from development rows only."""
     dev, meta = load_dev()
-    full, _ = _read_and_validate()
     from ..features import ALLOWED_PREDICTORS
 
     X, y, ids = (
-        dev[ALLOWED_PREDICTORS].copy(),
+        dev[list(ALLOWED_PREDICTORS)].copy(),
         dev["Churn Value"].astype(int),
         dev["CustomerID"].astype(str),
     )
     chosen_C, _, _ = select_C(X, y, ids)
     p = oof_predictions(X, y, ids, chosen_C)
-    q_full = oracle_oof_predictions(full, seed=1702, target_mean=0.2654)
-    q_by_id = subset_by_customer_id(full, full["CustomerID"].astype(str), q_full)
+    simulation = agent_config()["simulation"]
+    q_dev = oracle_oof_predictions(
+        dev,
+        seed=int(simulation["master_seed"]),
+        target_mean=float(simulation["oracle_mean_target"]),
+    )
     return (
         dev,
         dict(zip(ids, p)),
-        {customer_id: q_by_id[customer_id] for customer_id in ids},
+        dict(zip(ids, q_dev)),
         {
             **meta,
             "chosen_C": chosen_C,
-            "oracle_population_mean": float(np.mean(q_full)),
+            "simulation_truth_source": "development_only_oof_oracle",
+            "simulation_propensity_mean": float(np.mean(q_dev)),
+            "reserved_access": False,
         },
     )
 
@@ -199,7 +205,8 @@ def run_simulation(
         "cycles": 6,
         "dev_rows": len(dev),
         "reserved_access": False,
-        "oracle_population_mean": meta["oracle_population_mean"],
+        "simulation_truth_source": meta["simulation_truth_source"],
+        "simulation_propensity_mean": meta["simulation_propensity_mean"],
         "r_action": 0.25,
         "r_true_evaluator_only": 0.35,
         "truth_file": str(truth_out / "evaluator_truth.csv"),

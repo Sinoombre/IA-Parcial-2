@@ -17,10 +17,14 @@ from .model import make_pipeline, select_C
 from .metrics import calibration_metrics
 from .utility import add_utilities
 from .decision import select_candidates
+from .protocol import validate_final_authorization
+from .settings import THRESHOLDS_CONFIG_PATH, threshold_config
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = REPO_ROOT / "config" / "agente.yaml"
-THRESHOLD = 0.75
+THRESHOLD = float(
+    threshold_config()["medidas_formales"]["M1_precision_at_15"]["umbral"]
+)
 
 
 def _sha256(path: Path) -> str:
@@ -48,6 +52,7 @@ def run_final_evaluation(
     *,
     output_dir: str | Path = "artifacts/final_evaluation",
     confirm_final: bool = False,
+    authorization_file: str | Path | None = None,
 ) -> dict:
     """Entrena en desarrollo y evalúa una sola vez sobre la reserva.
 
@@ -56,20 +61,23 @@ def run_final_evaluation(
     """
     if not confirm_final:
         raise PermissionError(
-            "S01 está bloqueado: use --confirm-final solo después de congelar "
-            "código, configuración, umbrales y autorización de la pareja"
+            "S01 está bloqueado: use --confirm-final solo con autorización vigente"
         )
+    validate_final_authorization(authorization_file, output_dir=output_dir)
 
     dev, dev_meta = load_dev()
-    X_dev = dev[ALLOWED_PREDICTORS].copy()
+    X_dev = dev[list(ALLOWED_PREDICTORS)].copy()
     y_dev = dev["Churn Value"].astype(int)
     ids_dev = dev["CustomerID"].astype(str)
     chosen_c, cv_table, cv_summary = select_C(X_dev, y_dev, ids_dev)
     pipeline = make_pipeline(chosen_c)
     pipeline.fit(X_dev, y_dev)
 
-    reserved = load_reserved(final_evaluation=True)
-    X_reserved = reserved[ALLOWED_PREDICTORS].copy()
+    reserved = load_reserved(
+        authorization_file=authorization_file,
+        output_dir=output_dir,
+    )
+    X_reserved = reserved[list(ALLOWED_PREDICTORS)].copy()
     ids_reserved = reserved["CustomerID"].astype(str)
     probabilities = pipeline.predict_proba(X_reserved)[:, 1]
     mean_cltv = float(dev["CLTV"].mean())
@@ -170,6 +178,10 @@ def run_final_evaluation(
         else float("nan"),
         "chosen_C": chosen_c,
         "dataset_sha256": dev_meta["dataset_sha256"],
+        "partition_sha256": dev_meta["partition_sha256"],
+        "config_sha256": _sha256(CONFIG_PATH),
+        "thresholds_sha256": _sha256(THRESHOLDS_CONFIG_PATH),
+        "reserved_access": True,
         "generated_at_utc": timestamp,
     }
     (out / "final_metrics.json").write_text(
@@ -182,7 +194,10 @@ def run_final_evaluation(
                 "model_sha256": _sha256(out / "model_v1_frozen.joblib"),
                 "config_file": "config/agente.yaml",
                 "config_sha256": _sha256(CONFIG_PATH),
+                "thresholds_file": "config/umbrales.yaml",
+                "thresholds_sha256": _sha256(THRESHOLDS_CONFIG_PATH),
                 "dataset_sha256": dev_meta["dataset_sha256"],
+                "partition_sha256": dev_meta["partition_sha256"],
                 "dev_rows": len(dev),
                 "reserved_rows": len(reserved),
                 "chosen_C": chosen_c,

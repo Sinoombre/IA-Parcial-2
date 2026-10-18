@@ -23,7 +23,7 @@ def dataset_path() -> Path:
 
 
 def partition_path() -> Path:
-    return REPO_ROOT / "artifacts" / "data" / "particion_prueba_indices.csv"
+    return REPO_ROOT / "artifacts" / "public" / "data" / "particion_prueba_indices.csv"
 
 
 def _sha256(path: Path) -> str:

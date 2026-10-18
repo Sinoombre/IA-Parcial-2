@@ -1,0 +1,1122 @@
+{
+  "m2": {
+    "total_decisions": 2809,
+    "reconstructible_decisions": 2809,
+    "score": 1.0,
+    "threshold": 1.0,
+    "passes": true
+  },
+  "m3": {
+    "passed_cases": 55,
+    "expected_cases": 55,
+    "score": 1.0,
+    "threshold": 1.0,
+    "passes": true,
+    "s10_statuses": {
+      "not_sent": 425,
+      "accepted": 50,
+      "rejected": 14,
+      "crm_error": 3,
+      "error": 8
+    }
+  },
+  "runs": 45,
+  "run_results": {
+    "m2": [
+      {
+        "metric": "M2",
+        "total_decisions": 141,
+        "reconstructible_decisions": 141,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 148,
+        "reconstructible_decisions": 148,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 137,
+        "reconstructible_decisions": 137,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 174,
+        "reconstructible_decisions": 174,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 179,
+        "reconstructible_decisions": 179,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 6,
+        "reconstructible_decisions": 6,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 6,
+        "reconstructible_decisions": 6,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 6,
+        "reconstructible_decisions": 6,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 6,
+        "reconstructible_decisions": 6,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 6,
+        "reconstructible_decisions": 6,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 50,
+        "reconstructible_decisions": 50,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 100,
+        "reconstructible_decisions": 100,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 100,
+        "reconstructible_decisions": 100,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 100,
+        "reconstructible_decisions": 100,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 100,
+        "reconstructible_decisions": 100,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      },
+      {
+        "metric": "M2",
+        "total_decisions": 100,
+        "reconstructible_decisions": 100,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true
+      }
+    ],
+    "m3": [
+      {
+        "metric": "M3",
+        "scenario": "S02",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 123,
+          "accepted": 18
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S02",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 129,
+          "accepted": 19
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S02",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 119,
+          "accepted": 18
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S02",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 151,
+          "accepted": 23
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S02",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 155,
+          "accepted": 24
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S03",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S03",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S03",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S03",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S03",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S04",
+        "checks": {
+          "small_population": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 6
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S04",
+        "checks": {
+          "small_population": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 6
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S04",
+        "checks": {
+          "small_population": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 6
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S04",
+        "checks": {
+          "small_population": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 6
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S04",
+        "checks": {
+          "small_population": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 6
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S05",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "accepted": 7,
+          "not_sent": 43
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S05",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "accepted": 7,
+          "not_sent": 43
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S05",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "accepted": 7,
+          "not_sent": 43
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S05",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "accepted": 7,
+          "not_sent": 43
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S05",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "accepted": 7,
+          "not_sent": 43
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S06",
+        "checks": {
+          "zero_positive_utility": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 50
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S06",
+        "checks": {
+          "zero_positive_utility": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 50
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S06",
+        "checks": {
+          "zero_positive_utility": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 50
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S06",
+        "checks": {
+          "zero_positive_utility": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 50
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S06",
+        "checks": {
+          "zero_positive_utility": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 50
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S07",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S07",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S07",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S07",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S07",
+        "checks": {
+          "scenario_completed": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S08",
+        "checks": {
+          "missing_values": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "accepted": 7,
+          "not_sent": 43
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S08",
+        "checks": {
+          "missing_values": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "accepted": 7,
+          "not_sent": 43
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S08",
+        "checks": {
+          "missing_values": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "accepted": 7,
+          "not_sent": 43
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S08",
+        "checks": {
+          "missing_values": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "accepted": 7,
+          "not_sent": 43
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S08",
+        "checks": {
+          "missing_values": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "accepted": 7,
+          "not_sent": 43
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S09",
+        "checks": {
+          "unknown_category": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S09",
+        "checks": {
+          "unknown_category": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S09",
+        "checks": {
+          "unknown_category": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S09",
+        "checks": {
+          "unknown_category": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S09",
+        "checks": {
+          "unknown_category": true
+        },
+        "passed_cases": 1,
+        "expected_cases": 1,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 43,
+          "accepted": 7
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S10",
+        "checks": {
+          "failure_statuses_registered": true,
+          "timeout_retry_registered": true,
+          "continuity": true
+        },
+        "passed_cases": 3,
+        "expected_cases": 3,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 85,
+          "accepted": 14,
+          "rejected": 1
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S10",
+        "checks": {
+          "failure_statuses_registered": true,
+          "timeout_retry_registered": true,
+          "continuity": true
+        },
+        "passed_cases": 3,
+        "expected_cases": 3,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 85,
+          "crm_error": 1,
+          "accepted": 11,
+          "error": 2,
+          "rejected": 1
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S10",
+        "checks": {
+          "failure_statuses_registered": true,
+          "timeout_retry_registered": true,
+          "continuity": true
+        },
+        "passed_cases": 3,
+        "expected_cases": 3,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 85,
+          "error": 3,
+          "rejected": 3,
+          "accepted": 8,
+          "crm_error": 1
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S10",
+        "checks": {
+          "failure_statuses_registered": true,
+          "timeout_retry_registered": true,
+          "continuity": true
+        },
+        "passed_cases": 3,
+        "expected_cases": 3,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 85,
+          "accepted": 7,
+          "error": 2,
+          "rejected": 6
+        }
+      },
+      {
+        "metric": "M3",
+        "scenario": "S10",
+        "checks": {
+          "failure_statuses_registered": true,
+          "timeout_retry_registered": true,
+          "continuity": true
+        },
+        "passed_cases": 3,
+        "expected_cases": 3,
+        "score": 1.0,
+        "threshold": 1.0,
+        "passes": true,
+        "crm_statuses": {
+          "not_sent": 85,
+          "accepted": 10,
+          "rejected": 3,
+          "crm_error": 1,
+          "error": 1
+        }
+      }
+    ]
+  }
+}

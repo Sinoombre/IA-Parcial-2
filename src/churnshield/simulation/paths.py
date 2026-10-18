@@ -9,7 +9,18 @@ def evaluator_output_path(
 ) -> Path:
     public_path = Path(output_dir).expanduser().resolve()
     if evaluator_output_dir is None:
-        evaluator_path = public_path.parent / "evaluator_truth"
+        artifacts_public = next(
+            (
+                parent
+                for parent in public_path.parents
+                if parent.name == "public" and parent.parent.name == "artifacts"
+            ),
+            None,
+        )
+        if artifacts_public is None:
+            evaluator_path = public_path.parent / "evaluator_truth"
+        else:
+            evaluator_path = artifacts_public.parent / "private" / "evaluator_truth"
     else:
         evaluator_path = Path(evaluator_output_dir).expanduser()
     evaluator_path = evaluator_path.resolve()

@@ -98,7 +98,7 @@ def run_scenario(
     scenario: str,
     *,
     seed: int = 101,
-    output_dir: str | Path = "artifacts/scenarios",
+    output_dir: str | Path = "artifacts/public/scenarios",
     evaluator_output_dir: str | Path | None = None,
 ) -> dict:
     scenario = scenario.upper()
@@ -322,7 +322,7 @@ def run_many(
     scenarios: Iterable[str],
     *,
     seeds=(101, 102, 103, 104, 105),
-    output_dir: str | Path = "artifacts/scenarios",
+    output_dir: str | Path = "artifacts/public/scenarios",
     evaluator_output_dir: str | Path | None = None,
 ) -> list[dict]:
     scenarios = tuple(scenarios)

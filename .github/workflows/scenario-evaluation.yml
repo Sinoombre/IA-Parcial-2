@@ -37,9 +37,9 @@ jobs:
   evaluate:
     runs-on: ubuntu-latest
     env:
-      RUN_ROOT: artifacts/runs/${{ github.run_id }}-${{ github.run_attempt }}
-      SCENARIO_DIR: artifacts/runs/${{ github.run_id }}-${{ github.run_attempt }}/scenarios
-      TRUTH_DIR: artifacts/runs/${{ github.run_id }}-${{ github.run_attempt }}/evaluator_truth
+      RUN_ROOT: ${{ runner.temp }}/churnshield-${{ github.run_id }}-${{ github.run_attempt }}
+      SCENARIO_DIR: ${{ runner.temp }}/churnshield-${{ github.run_id }}-${{ github.run_attempt }}/scenarios
+      TRUTH_DIR: ${{ runner.temp }}/churnshield-${{ github.run_id }}-${{ github.run_attempt }}/evaluator_truth
 
     steps:
       - name: Check out repository
@@ -97,14 +97,6 @@ jobs:
             --input-dir "$SCENARIO_DIR" \
             --output "$RUN_ROOT/evaluation.json" \
             "${expected_args[@]}"
-      - name: Evaluate M2 and M3
-        env:
-          PYTHONPATH: src
-        run: |
-          python -m churnshield evaluate \
-            --input-dir artifacts/scenarios \
-            --output artifacts/scenario_evaluation.json
-
       - name: Upload scenario results
         if: always()
         uses: actions/upload-artifact@v4

@@ -16,9 +16,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-ARTIFACT_DIR = REPO_ROOT / "artifacts" / "experiments" / "random_forest"
+ARTIFACT_DIR = REPO_ROOT / "artifacts" / "public" / "experiments" / "random_forest"
 ARTIFACT_RELATIVE_PATH = (
-    "artifacts/experiments/random_forest/random_forest_comparison.json"
+    "artifacts/public/experiments/random_forest/random_forest_comparison.json"
 )
 SRC_ROOT = str(REPO_ROOT / "src")
 if SRC_ROOT not in sys.path:

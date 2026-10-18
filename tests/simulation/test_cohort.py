@@ -69,6 +69,16 @@ def test_run_simulation_writes_evaluator_truth_separately(
     assert result["truth_file"] == str(evaluator_file)
 
 
+def test_public_artifact_output_routes_evaluator_truth_to_ignored_tree(tmp_path):
+    from churnshield.simulation.paths import evaluator_output_path
+
+    output_dir = tmp_path / "artifacts" / "public" / "scenarios"
+
+    assert evaluator_output_path(output_dir, None) == (
+        tmp_path / "artifacts" / "private" / "evaluator_truth"
+    )
+
+
 def test_development_inputs_generates_oracle_truth_from_development_only(
     small_df, monkeypatch
 ):

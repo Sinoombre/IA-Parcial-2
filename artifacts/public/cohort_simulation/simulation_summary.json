@@ -1,0 +1,11 @@
+{
+  "repetition_seed": 101,
+  "cycles": 6,
+  "dev_rows": 5634,
+  "reserved_access": false,
+  "simulation_truth_source": "development_only_oof_oracle",
+  "simulation_propensity_mean": 0.2654,
+  "r_action": 0.25,
+  "r_true_evaluator_only": 0.35,
+  "truth_file": "C:\\Users\\mjuli\\OneDrive\\Documentos\\GitHub\\IA-Parcial-2\\artifacts\\private\\evaluator_truth\\cohort_simulation\\evaluator_truth.csv"
+}

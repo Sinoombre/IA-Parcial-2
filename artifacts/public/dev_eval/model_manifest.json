@@ -1,0 +1,26 @@
+{
+  "model_sha256": "bdd9f0647caa88b0e34e171fc5d5f123129b2013da4decd0c52d36b8fd8336c5",
+  "dataset_sha256": "1bcbc0ccc9b352175216979102628e579cfbde2c3ff57b005de168a433122640",
+  "partition_sha256": "d7d8ca6501a7c2ad951f5b6991fe0756ad6df077cbdbcbef62e66e23e49c9514",
+  "config_sha256": "b22d4413f9b569e329b6dc911cbd14ff7d870a889e7427d73995466bc43c3a19",
+  "thresholds_sha256": "d20c8a1b8c653084be6140fc66db9e905d232bf74377be4aef758c18b1c23d60",
+  "dev_rows": 5634,
+  "reserved_rows": 1409,
+  "chosen_C": 0.03,
+  "features": [
+    "Partner",
+    "Dependents",
+    "Internet Service",
+    "Contract",
+    "Paperless Billing",
+    "Payment Method",
+    "Tenure Months",
+    "Monthly Charges",
+    "Total Charges"
+  ],
+  "mean_cltv_train": 4387.761625843095,
+  "reserved_evaluation_executed": false,
+  "model_file": "model_v1.joblib",
+  "commit_hash": "0f6e062d4f15015eb7d4e8e738def87a498cbdcb",
+  "working_tree_clean": false
+}

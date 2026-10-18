@@ -50,7 +50,7 @@ def _write_jsonl(path: Path, rows: list[dict]) -> None:
 
 def run_final_evaluation(
     *,
-    output_dir: str | Path = "artifacts/final_evaluation",
+    output_dir: str | Path = "artifacts/private/final_evaluation",
     confirm_final: bool = False,
     authorization_file: str | Path | None = None,
 ) -> dict:

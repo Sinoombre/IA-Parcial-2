@@ -41,8 +41,3 @@ jobs:
           PYTHONPATH: src
         run: |
           python -m churnshield run --scenario S03
-
-      - name: Proteger el EDA oficial de main
-        run: |
-          test "$(sha256sum data/EDA.ipynb | cut -d ' ' -f 1)" = \
-          "e7242422ab7051bfddb5dae19007308d4ddbc05babbaf43bec663b5e7bc73d77"

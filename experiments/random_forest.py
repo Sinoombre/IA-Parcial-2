@@ -15,6 +15,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+ARTIFACT_DIR = REPO_ROOT / "artifacts" / "experiments" / "random_forest"
+ARTIFACT_RELATIVE_PATH = "artifacts/experiments/random_forest/random_forest_comparison.json"
 SRC_ROOT = str(REPO_ROOT / "src")
 if SRC_ROOT not in sys.path:
     sys.path.insert(0, SRC_ROOT)
@@ -86,8 +88,10 @@ def compare_random_forest(X: pd.DataFrame, y: pd.Series, ids: pd.Series) -> dict
 
 
 def save_comparison(result: dict) -> None:
-    Path("artifacts").mkdir(exist_ok=True)
-    Path("artifacts/random_forest_comparison.json").write_text(json.dumps(result, indent=2, default=float))
+    ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
+    (ARTIFACT_DIR / "random_forest_comparison.json").write_text(
+        json.dumps(result, indent=2, default=float)
+    )
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -113,7 +117,7 @@ def main(argv: list[str] | None = None) -> None:
             key: chosen[key]
             for key in ("precision_at_15", "recall_at_15", "lift_at_15", "auc", "log_loss")
         },
-        "detailed_results": "artifacts/random_forest_comparison.json",
+        "detailed_results": ARTIFACT_RELATIVE_PATH,
     }
     print(json.dumps(summary, indent=2))
 

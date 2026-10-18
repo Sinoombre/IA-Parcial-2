@@ -27,7 +27,8 @@ def test_compare_selects_best_candidate_and_saves_result(monkeypatch, tmp_path):
         return predictions, folds
 
     monkeypatch.setattr(logistic_regression, "oof_predictions", fake_oof_predictions)
-    monkeypatch.chdir(tmp_path)
+    artifact_dir = tmp_path / "artifacts" / "experiments" / "logistic_regression"
+    monkeypatch.setattr(logistic_regression, "ARTIFACT_DIR", artifact_dir)
 
     result = logistic_regression.compare_logistic_regression(
         pd.DataFrame(index=range(len(y))), y, ids
@@ -38,7 +39,7 @@ def test_compare_selects_best_candidate_and_saves_result(monkeypatch, tmp_path):
     assert result["chosen_config"] == logistic_regression.LR_CONFIGS["lr_base"]
     assert len(result["candidates"]) == len(logistic_regression.LR_CONFIGS)
     saved = json.loads(
-        (tmp_path / "artifacts" / "logistic_regression_comparison.json").read_text()
+        (artifact_dir / "logistic_regression_comparison.json").read_text()
     )
     assert saved["chosen_model"] == "lr_base"
 
@@ -71,5 +72,5 @@ def test_main_prints_reduced_json_and_saves_detailed_result(monkeypatch, capsys)
     assert output["chosen_model"] == "lr_base"
     assert output["dev_rows"] == 2
     assert output["metrics"]["auc"] == 0.8
-    assert output["detailed_results"] == "artifacts/logistic_regression_comparison.json"
+    assert output["detailed_results"] == logistic_regression.ARTIFACT_RELATIVE_PATH
     assert saved == [result]

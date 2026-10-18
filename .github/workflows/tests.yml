@@ -1,4 +1,4 @@
-name: Phase 1 and 2 CI
+name: Phases and tests
 
 on:
   push:
@@ -28,13 +28,13 @@ jobs:
 
       - name: Compilar código y pruebas
         run: |
-          python -m compileall -q src/churnshield experiments tests/fase1 tests/fase2 tests/experiments
+          python -m compileall -q src/churnshield experiments tests/fase1 tests/fase2 tests/fase3 tests/experiments
 
       - name: Ejecutar pruebas
         env:
           PYTHONPATH: src
         run: |
-          python -m pytest -q tests/fase1 tests/fase2 tests/experiments
+          python -m pytest -q tests/fase1 tests/fase2 tests/fase3 tests/experiments
 
       - name: Probar escenario S03 de Fase 1
         env:

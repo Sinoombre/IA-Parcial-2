@@ -24,11 +24,21 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Ruff
-        run: python -m pip install -r requirements-dev.txt
+      - name: Install project and quality dependencies
+        run: python -m pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Check lint
-        run: python -m ruff check src tests experiments
+        run: python -m ruff check src tests experiments ui
 
       - name: Check formatting
-        run: python -m ruff format --check src/churnshield/scenarios src/churnshield/simulation tests/scenarios tests/simulation
+        run: >-
+          python -m ruff format --check
+          src/churnshield/scenarios src/churnshield/simulation
+          tests/scenarios tests/simulation ui
+          src/churnshield/evaluation.py src/churnshield/final_eval.py
+          src/churnshield/robustness.py tests/evaluation tests/final
+
+      - name: Run tests
+        env:
+          PYTHONPATH: src
+        run: python -m pytest -q

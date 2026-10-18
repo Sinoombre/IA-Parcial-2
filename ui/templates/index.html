@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Panel local de ChurnShield para explorar predicciones de riesgo de abandono en desarrollo."
+    >
+    <title>ChurnShield — laboratorio de predicción</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=6">
+    <script src="{{ url_for('static', filename='app.js') }}?v=5" defer></script>
+  </head>
+  <body>
+    {% set options = {
+      'Partner': ['No', 'Yes'],
+      'Dependents': ['No', 'Yes'],
+      'Phone Service': ['No', 'Yes'],
+      'Multiple Lines': ['No phone service', 'No', 'Yes'],
+      'Internet Service': ['DSL', 'Fiber optic', 'No'],
+      'Online Security': ['No internet service', 'No', 'Yes'],
+      'Online Backup': ['No internet service', 'No', 'Yes'],
+      'Device Protection': ['No internet service', 'No', 'Yes'],
+      'Tech Support': ['No internet service', 'No', 'Yes'],
+      'Streaming TV': ['No internet service', 'No', 'Yes'],
+      'Streaming Movies': ['No internet service', 'No', 'Yes'],
+      'Contract': ['Month-to-month', 'One year', 'Two year'],
+      'Paperless Billing': ['No', 'Yes'],
+      'Payment Method': [
+        'Electronic check',
+        'Mailed check',
+        'Bank transfer (automatic)',
+        'Credit card (automatic)'
+      ]
+    } %}
+
+    <main class="page-shell">
+      <nav class="top-nav" aria-label="Navegación principal">
+        <a class="brand" href="/" aria-label="ChurnShield, inicio">
+          <span class="brand-mark">c<span>.</span></span>
+          <span>churnshield<small>LABORATORIO DE RETENCIÓN</small></span>
+        </a>
+      </nav>
+
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">CHURNSHIELD · PREDICCIONES DE DESARROLLO</p>
+          <h1>Prueba de predicciones<br><em>de churn</em></h1>
+          <p class="hero-description">
+            Evalúa perfiles individuales o grupos seleccionados del conjunto de desarrollo.
+            Las predicciones no utilizan la partición reservada.
+          </p>
+          <a class="text-link" href="#metodologia">Cómo se calcula <span>↓</span></a>
+        </div>
+        <div class="hero-stamp" aria-label="Evaluación reservada protegida">
+          <span class="stamp-icon">✳</span>
+          <span>DATOS DE PRUEBA</span>
+          <strong>RESERVA<br>PROTEGIDA</strong>
+          <small>La semilla solo selecciona<br>perfiles de desarrollo.</small>
+        </div>
+        <span class="hero-orbit orbit-one"></span>
+        <span class="hero-orbit orbit-two"></span>
+      </header>
+
+      <section class="try-section" aria-labelledby="try-title">
+        <div class="section-intro">
+          <span class="section-index">01</span>
+          <div>
+            <p class="eyebrow">SELECCIÓN DE PERFILES</p>
+            <h2 id="try-title">Elegir los datos de prueba</h2>
+          </div>
+        </div>
+
+        <div class="try-grid">
+          <section class="seed-panel" aria-labelledby="seed-title">
+            <div class="panel-kicker"><span>✳</span> SELECCIÓN REPRODUCIBLE</div>
+            <h3 id="seed-title">Generar un grupo<br>reproducible</h3>
+            <p>
+              Se seleccionarán de inmediato todas las personas indicadas y se calculará
+              el grupo completo. La semilla permite repetir la selección.
+            </p>
+            <form id="seed-form" class="seed-controls">
+              <div class="seed-row">
+                <label for="seed-input">Semilla<input id="seed-input" name="seed" type="number" min="0" max="4294967295" value="42" required></label>
+                <label for="group-size">Tamaño del grupo<input id="group-size" name="count" type="number" min="1" max="500" value="20" required></label>
+                <button class="seed-button" type="submit">Generar y calcular grupo <span>↗</span></button>
+              </div>
+              <small class="seed-size-hint">Se calculará todo el grupo; no tienes que elegir entre las tarjetas.</small>
+            </form>
+            <p class="seed-error" id="seed-error" role="alert"></p>
+            <div class="seed-foot"><span class="lock-icon">▣</span> Semilla independiente de la partición reservada</div>
+          </section>
+
+          <section class="manual-panel" aria-labelledby="manual-title">
+            <div class="manual-topline"><span class="manual-icon">↗</span><span>PREDICCIÓN INDIVIDUAL</span></div>
+            <h3 id="manual-title">Ingreso manual<br>de un perfil</h3>
+            <p>
+              Ingresa manualmente las características de una persona y calcula su
+              predicción individual.
+            </p>
+            <a class="manual-link" href="#profile-form">Abrir formulario <span>↓</span></a>
+            <div class="manual-doodle" aria-hidden="true">01—17</div>
+          </section>
+        </div>
+        <div class="sample-area" id="sample-area" aria-live="polite" hidden>
+          <div class="sample-heading">
+            <div><span class="eyebrow">VISTA INDIVIDUAL · OPCIONAL</span><h3>Probar una persona por separado</h3></div>
+            <span class="seed-tag" id="seed-tag"></span>
+          </div>
+          <p class="sample-count" id="sample-count"></p>
+          <div class="sample-grid" id="sample-grid"></div>
+        </div>
+      </section>
+
+      <div class="workspace" id="profile-form">
+        <section class="card form-card" aria-labelledby="form-title">
+          <div class="card-head">
+            <div class="section-intro compact">
+              <span class="section-index">02</span>
+              <div><p class="eyebrow">EL PERFIL</p><h2 id="form-title">Ajusta los detalles</h2></div>
+            </div>
+            <button class="ghost" id="reset" type="reset" form="predict-form">Volver al inicio ↺</button>
+          </div>
+          <p class="form-hint">Todos los campos son editables, incluso después de cargar un perfil de ejemplo.</p>
+          <form id="predict-form">
+            <div class="form-grid">
+              {% for field in fields %}
+                <label for="field-{{ loop.index }}">
+                  <span>{{ field }}</span>
+                  {% if field in options %}
+                    <select id="field-{{ loop.index }}" name="{{ field }}" required>
+                      {% for option in options[field] %}
+                        <option value="{{ option }}" {% if defaults[field] == option %}selected{% endif %}>{{ option }}</option>
+                      {% endfor %}
+                    </select>
+                  {% else %}
+                    <input
+                      id="field-{{ loop.index }}"
+                      name="{{ field }}"
+                      type="number"
+                      value="{{ defaults[field] }}"
+                      min="0"
+                      {% if field == 'Tenure Months' %}max="72" step="1"{% else %}step="0.01"{% endif %}
+                      required
+                    >
+                  {% endif %}
+                </label>
+              {% endfor %}
+            </div>
+            <button class="primary" type="submit"><span>Calcular riesgo estimado</span><b aria-hidden="true">↗</b></button>
+          </form>
+        </section>
+
+        <section class="result-card" aria-labelledby="result-title" aria-live="polite">
+          <div class="result-top">
+            <div><p class="eyebrow">03 / LECTURA DEL MODELO</p><h2 id="result-title">Lo que muestra el perfil</h2></div>
+            <span class="state" id="result-state">EN ESPERA</span>
+          </div>
+          <div class="empty" id="empty-state">
+            <div class="empty-art"><span>?</span><i></i></div>
+            <p>Tu siguiente prueba empieza aquí.</p>
+            <small>Usa un perfil sugerido o configura el tuyo.</small>
+          </div>
+          <div class="hidden" id="result">
+            <div class="risk-row">
+              <div><span class="label">Probabilidad estimada</span><strong id="p-churn">—</strong></div>
+              <span class="risk-label" id="risk-label">—</span>
+            </div>
+            <div class="meter" role="progressbar" aria-label="Probabilidad estimada de churn" aria-valuemin="0" aria-valuemax="100">
+              <span id="meter-fill"></span>
+            </div>
+            <div class="metric-grid">
+              <div><span>Utilidad estimada</span><b id="u-act">—</b></div>
+              <div><span>Valor relativo</span><b id="v-client">—</b></div>
+            </div>
+            <div class="recommendation"><span class="recommendation-mark">↗</span><div><small>SEÑAL DE ESTA DEMO</small><b id="recommendation">—</b></div></div>
+            <p class="disclaimer" id="disclaimer">Riesgo estimado, no causalidad.</p>
+          </div>
+          <div class="result-foot"><span></span>MODELO DE DESARROLLO · NO ES UNA DECISIÓN REAL</div>
+        </section>
+      </div>
+
+      <section class="group-results hidden" id="group-results" aria-labelledby="group-results-title" aria-live="polite">
+        <div class="group-results-head">
+          <div>
+            <p class="eyebrow">RESULTADO AGREGADO</p>
+            <h2 id="group-results-title">Predicciones del grupo</h2>
+          </div>
+          <p class="group-disclaimer" id="group-disclaimer"></p>
+        </div>
+        <div class="group-stat-grid">
+          <div><span>Personas analizadas</span><b id="group-count">—</b></div>
+          <div><span>Riesgo promedio estimado</span><b id="group-average">—</b></div>
+          <div><span>Riesgo alto (≥ 70 %)</span><b id="group-high-risk">—</b></div>
+          <div><span>Utilidad promedio</span><b id="group-utility">—</b></div>
+        </div>
+        <div class="group-chart-panel">
+          <div class="chart-heading">
+            <div><h3>Distribución de probabilidades</h3><p>Perfiles por intervalo de riesgo estimado</p></div>
+          </div>
+          <div class="probability-chart" id="probability-chart" role="img" aria-label="Distribución de probabilidades por intervalo"></div>
+        </div>
+        <div class="group-table-wrap">
+          <table class="group-table">
+            <thead><tr><th>Perfil</th><th>Probabilidad estimada</th><th>Utilidad estimada</th><th>Señal de esta demo</th></tr></thead>
+            <tbody id="group-predictions"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="method-section" id="metodologia" aria-labelledby="method-title">
+        <div class="section-intro">
+          <span class="section-index">04</span>
+          <div><p class="eyebrow">DE DÓNDE SALE CADA NÚMERO</p><h2 id="method-title">Cómo se calculan los resultados</h2></div>
+        </div>
+        <p class="method-lead">
+          El modelo se ajusta y se prueba durante desarrollo. Esta pantalla calcula una predicción
+          individual; no sustituye las métricas agregadas ni ejecuta la evaluación reservada.
+        </p>
+        <div class="metric-table-wrap">
+          <table class="metric-table">
+            <thead><tr><th>Indicador</th><th>Cómo se obtiene</th><th>Qué significa aquí</th></tr></thead>
+            <tbody>
+              <tr>
+                <th>Probabilidad de churn</th>
+                <td>La regresión logística L2 devuelve <code>predict_proba</code> a partir de las 17 características del perfil. El modelo se ajustó solo con la partición de desarrollo.</td>
+                <td>Estimación aprendida con desarrollo; no es certeza ni efecto causal. Las categorías nuevas se ignoran de forma segura.</td>
+              </tr>
+              <tr>
+                <th>Valor relativo</th>
+                <td><code>Total Charges ÷ promedio de CLTV</code> en los datos de desarrollo usados al entrenar el modelo.</td>
+                <td>Escala adimensional aproximada para comparar perfiles; no representa dinero ni ingreso futuro esperado.</td>
+              </tr>
+              <tr>
+                <th>Utilidad de actuar</th>
+                <td><code>p × 0,25 × valor relativo − 0,05</code>. No actuar se fija en 0; el cálculo usa supuestos configurados para la demostración.</td>
+                <td>Si la utilidad supera 0, la interfaz sugiere revisar una campaña. No ejecuta acciones ni estima causalidad.</td>
+              </tr>
+              <tr>
+                <th>Precisión @ 15 %</th>
+                <td>Churners reales dentro del 15 % con mayor riesgo ÷ clientes seleccionados. El corte usa <code>floor(0,15 × N)</code>.</td>
+                <td>Métrica agregada out-of-fold (OOF): cada predicción se genera en un fold que no entrenó ese modelo. No se calcula con este perfil individual.</td>
+              </tr>
+              <tr>
+                <th>Recall @ 15 % y lift @ 15 %</th>
+                <td>Recall: churners capturados ÷ churners totales. Lift: precisión @ 15 % ÷ proporción de churn en desarrollo.</td>
+                <td>Indican cuántos casos positivos captura el cupo y cuánto mejora frente a una selección sin ranking.</td>
+              </tr>
+              <tr>
+                <th>AUC, Brier, log-loss y ECE</th>
+                <td>AUC mide ordenamiento; Brier y log-loss penalizan probabilidades erradas; ECE pondera la diferencia entre confianza y frecuencia real en 10 intervalos de probabilidad.</td>
+                <td>Diagnósticos agregados OOF de desarrollo: AUC más alto suele ser mejor; Brier, log-loss y ECE más bajos suelen ser mejores.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="method-notes">
+          <p><b>Cómo se eligió el modelo.</b> La regularización se compara en cinco folds estratificados con tres semillas. Las métricas agregadas promedian las predicciones out-of-fold generadas durante el desarrollo.</p>
+          <p><b>Qué no es una métrica.</b> Las etiquetas de riesgo alto/medio/bajo son guías visuales (≥ 70 %, ≥ 40 % y menor a 40 %); no alteran la predicción ni la recomendación de utilidad.</p>
+          <p class="reserved-note"><span>✳</span> La semilla solo elige filas de desarrollo. El corte reservado queda intacto; M1 final requiere autorización explícita y no se calcula en esta interfaz.</p>
+        </div>
+      </section>
+
+      <footer class="page-footer"><span>CHURNSHIELD <i>·</i> LABORATORIO LOCAL</span><span>Explora con curiosidad. Decide con evidencia.</span></footer>
+    </main>
+  </body>
+</html>

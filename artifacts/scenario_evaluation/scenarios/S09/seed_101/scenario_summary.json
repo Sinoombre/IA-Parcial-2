@@ -1,0 +1,19 @@
+{
+  "scenario": "S09",
+  "synthetic": true,
+  "unknown_category": true,
+  "missing_cell_count": 0,
+  "imputed_missing_count": 0,
+  "seed": 101,
+  "cycles": 1,
+  "r_hat_final": 0.29330499468650373,
+  "records": 50,
+  "output_dir": "artifacts\\phase5\\scenarios\\S09\\seed_101",
+  "crm_statuses": [
+    "accepted",
+    "not_sent"
+  ],
+  "unknown_category_value": "Two year",
+  "unknown_category_handled": true,
+  "probe_probability": 0.244403931093067
+}

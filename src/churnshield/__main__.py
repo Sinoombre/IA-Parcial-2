@@ -62,9 +62,7 @@ def main() -> None:
         "scenario-report",
         help="genera un resumen ejecutivo por escenario en JSON, CSV y Markdown",
     )
-    report_parser.add_argument(
-        "--input-dir", default="artifacts/public/scenarios"
-    )
+    report_parser.add_argument("--input-dir", default="artifacts/public/scenarios")
     report_parser.add_argument(
         "--evaluation",
         default="artifacts/public/scenario_evaluation/evaluation.json",
@@ -78,9 +76,7 @@ def main() -> None:
         choices=SCENARIOS,
         default=None,
     )
-    report_parser.add_argument(
-        "--expected-seeds", nargs="+", type=int, default=None
-    )
+    report_parser.add_argument("--expected-seeds", nargs="+", type=int, default=None)
     report_parser.add_argument(
         "--all-seeds",
         action="store_true",

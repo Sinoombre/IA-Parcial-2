@@ -72,7 +72,9 @@ def _run_summary(run_dir: Path, m2: dict, m3: dict) -> dict:
         ),
         "r_hat_final": _as_float(summary["r_hat_final"]),
         "crm_statuses": dict(sorted(statuses.items())),
-        "unknown_category_handled": bool(summary.get("unknown_category_handled", False)),
+        "unknown_category_handled": bool(
+            summary.get("unknown_category_handled", False)
+        ),
         "missing_cell_count": _as_int(summary.get("missing_cell_count", 0)),
         "imputed_missing_count": _as_int(summary.get("imputed_missing_count", 0)),
         "m2_score": _as_float(m2["score"]),
@@ -109,9 +111,7 @@ def _aggregate_runs(rows: list[dict]) -> list[dict]:
                 "mean_active_after": _mean(
                     [item["mean_active_after"] for item in items]
                 ),
-                "mean_r_hat_final": _mean(
-                    [item["r_hat_final"] for item in items]
-                ),
+                "mean_r_hat_final": _mean([item["r_hat_final"] for item in items]),
                 "crm_statuses": dict(sorted(statuses.items())),
                 "m2_score": _mean([item["m2_score"] for item in items]),
                 "m3_score": _mean([item["m3_score"] for item in items]),
@@ -120,9 +120,7 @@ def _aggregate_runs(rows: list[dict]) -> list[dict]:
                 "unknown_category_handled": any(
                     item["unknown_category_handled"] for item in items
                 ),
-                "missing_cell_count": sum(
-                    item["missing_cell_count"] for item in items
-                ),
+                "missing_cell_count": sum(item["missing_cell_count"] for item in items),
                 "imputed_missing_count": sum(
                     item["imputed_missing_count"] for item in items
                 ),
@@ -294,7 +292,9 @@ def write_scenario_report(
 def generate_scenario_report(
     input_dir: str | Path = "artifacts/public/scenarios",
     *,
-    evaluation_path: str | Path | None = "artifacts/public/scenario_evaluation/evaluation.json",
+    evaluation_path: str
+    | Path
+    | None = "artifacts/public/scenario_evaluation/evaluation.json",
     output_dir: str | Path = "artifacts/public/scenario_report",
     expected_runs: Iterable[tuple[str, int]] | None = None,
 ) -> dict:

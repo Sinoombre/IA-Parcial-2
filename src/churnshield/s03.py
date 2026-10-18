@@ -22,28 +22,23 @@ def synthetic_rows() -> list[dict]:
             p_churn, value, utility = 0.60 - 0.02 * i, 1.0, 0.20 - 0.01 * i
         else:
             p_churn, value, utility = 0.10, 1.0, -0.01
-        rows.append(
-            {
-                "customer_id": customer_id,
-                "p_churn": p_churn,
-                "v_cliente": value,
-                "u_act": utility,
-                "u_noact": 0.0,
-            }
-        )
+        rows.append({
+            "customer_id": customer_id,
+            "p_churn": p_churn,
+            "v_cliente": value,
+            "u_act": utility,
+            "u_noact": 0.0,
+        })
     return rows
 
 
 def run() -> dict:
     result = select_candidates(synthetic_rows())
-    if (
-        result["n_active"] != 50
-        or result["k"] != 7
-        or result["n_selected"] > 7
-        or result["coverage"] > 0.15
-        or any(row["u_act"] <= 0 for row in result["decisions"] if row["selected"])
-    ):
-        raise RuntimeError("S03 produjo una selección fuera de los límites esperados")
+    assert result["n_active"] == 50
+    assert result["k"] == 7
+    assert result["n_selected"] <= 7
+    assert result["coverage"] <= 0.15
+    assert all(row["u_act"] > 0 for row in result["decisions"] if row["selected"])
     return result
 
 
@@ -60,12 +55,7 @@ def main() -> None:
         print(f"k={result['k']}")
         print(f"n_selected={result['n_selected']}")
         print(f"coverage={result['coverage']:.6f}")
-        print(
-            "selected_ids="
-            + ",".join(
-                row["customer_id"] for row in result["decisions"] if row["selected"]
-            )
-        )
+        print("selected_ids=" + ",".join(row["customer_id"] for row in result["decisions"] if row["selected"]))
 
 
 if __name__ == "__main__":

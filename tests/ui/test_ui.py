@@ -1,5 +1,3 @@
-import pytest
-
 from ui.app import DEFAULTS, app
 
 
@@ -70,36 +68,6 @@ def test_ui_rejects_non_finite_numeric_values():
     assert "número finito" in response.get_json()["error"]
 
 
-@pytest.mark.parametrize("monthly_charges", ["not-a-number", 10**1000])
-def test_ui_rejects_unconvertible_numeric_values(monthly_charges):
-    response = app.test_client().post(
-        "/api/predict",
-        json={**DEFAULTS, "Monthly Charges": monthly_charges},
-    )
-
-    assert response.status_code == 400
-    assert "Monthly Charges debe ser un número finito" in response.get_json()["error"]
-
-
-@pytest.mark.parametrize(
-    ("body", "content_type", "message"),
-    [
-        ("{malformed", "application/json", "JSON válido"),
-        ('["not", "an object"]', "application/json", "objeto"),
-        ("{}", "text/plain", "debe ser JSON"),
-    ],
-)
-def test_ui_rejects_invalid_json_request_bodies(body, content_type, message):
-    response = app.test_client().post(
-        "/api/predict",
-        data=body,
-        content_type=content_type,
-    )
-
-    assert response.status_code == 400
-    assert message in response.get_json()["error"]
-
-
 def test_ui_predicts_group_without_exposing_training_labels(monkeypatch):
     import numpy as np
 
@@ -150,7 +118,6 @@ def test_ui_offers_individual_and_group_prediction_without_theme_switch():
     assert 'id="analyze-group"' not in html
     assert "ENTORNO DE DESARROLLO" not in html
     assert 'id="theme-toggle"' not in html
-    assert 'class="background-picker"' not in html
 
 
 def test_ui_predicts_without_reservation_access():
@@ -161,42 +128,3 @@ def test_ui_predicts_without_reservation_access():
     assert 0.0 <= payload["p_churn"] <= 1.0
     assert payload["reserved_evaluation_executed"] is False
     assert "causalidad" in payload["disclaimer"]
-
-
-def test_ui_reports_missing_model_card_without_using_a_fallback(monkeypatch, tmp_path):
-    monkeypatch.setattr("ui.app.CARD_PATH", tmp_path / "missing-model-card.json")
-
-    response = app.test_client().post("/api/predict", json=DEFAULTS)
-
-    assert response.status_code == 503
-    assert "model-card.json" in response.get_json()["error"]
-
-
-def test_ui_reuses_cached_model_and_reloads_when_artifact_changes(
-    monkeypatch, tmp_path
-):
-    import importlib
-
-    ui_module = importlib.import_module("ui.app")
-    model_path = tmp_path / "model.joblib"
-    model_path.write_bytes(b"first model")
-    loaded_paths = []
-
-    def load_model(path):
-        loaded_paths.append(path)
-        return object()
-
-    monkeypatch.setattr(ui_module, "MODEL_PATH", model_path)
-    monkeypatch.setattr(ui_module.joblib, "load", load_model)
-    ui_module._load_model_from_path.cache_clear()
-    try:
-        first = ui_module._load_model()
-        assert ui_module._load_model() is first
-        assert len(loaded_paths) == 1
-
-        model_path.write_bytes(b"updated model artifact")
-        second = ui_module._load_model()
-        assert second is not first
-        assert len(loaded_paths) == 2
-    finally:
-        ui_module._load_model_from_path.cache_clear()

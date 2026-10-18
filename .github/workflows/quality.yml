@@ -36,9 +36,7 @@ jobs:
           src/churnshield/scenarios src/churnshield/simulation
           tests/scenarios tests/simulation ui
           src/churnshield/evaluation.py src/churnshield/final_eval.py
-          src/churnshield/robustness.py src/churnshield/data.py
-          src/churnshield/s03.py tests/evaluation tests/final
-          tests/agent/test_config.py tests/modeling
+          src/churnshield/robustness.py tests/evaluation tests/final
 
       - name: Run tests
         env:

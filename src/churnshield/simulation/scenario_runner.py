@@ -122,10 +122,7 @@ def run_scenario(
         timeout_retries=1,
     )
     rng_would, rng_saved, rng_crm = _rngs(seed)
-    customer_ids = df["CustomerID"].astype(str).tolist()
-    cltv_by_id = dict(zip(customer_ids, df["CLTV"].astype(float)))
-    churn_by_id = dict(zip(customer_ids, df["Churn Value"].astype(int)))
-    active = set(customer_ids)
+    active = set(df["CustomerID"].astype(str))
     r_hat = r0
     public_decisions, outcomes, learning, summaries, perceptions, truth = (
         [],
@@ -135,16 +132,16 @@ def run_scenario(
         [],
         [],
     )
-    mean_cltv = float(df["CLTV"].mean())
-    if not np.isfinite(mean_cltv):
-        mean_cltv = 1.0
+    mean_cltv = (
+        float(df["CLTV"].mean()) if not np.isnan(float(df["CLTV"].mean())) else 1.0
+    )
     for cycle in range(1, cycles + 1):
+        active_df = df[df["CustomerID"].astype(str).isin(active)]
         rows = []
-        for cid in customer_ids:
-            if cid not in active:
-                continue
+        for _, item in active_df.iterrows():
+            cid = str(item["CustomerID"])
             p_churn = float(p_map[cid])
-            v = cltv_by_id[cid] / mean_cltv if mean_cltv else 1.0
+            v = float(item["CLTV"]) / mean_cltv if mean_cltv else 1.0
             rows.append(
                 {"customer_id": cid, "p_churn": p_churn, "v_cliente": v, "r_hat": r_hat}
             )
@@ -152,11 +149,8 @@ def run_scenario(
         rows = add_utilities(rows, r=r_hat, cost=cost)
         segments = _risk_segments(rows)
         selected = select_candidates(rows, ranking="utility")
-        decisions_by_id = {row["customer_id"]: row for row in selected["decisions"]}
         selected_ids = {
-            customer_id
-            for customer_id, row in decisions_by_id.items()
-            if row["selected"]
+            row["customer_id"] for row in selected["decisions"] if row["selected"]
         }
         treated_p, treated_obs = [], []
         churned = set()
@@ -182,7 +176,9 @@ def run_scenario(
             if cid in selected_ids:
                 crm_result = crm.send(f"{scenario}-{seed}-{cycle}-{cid}", cid, rng_crm)
             would = (
-                churn_by_id[cid] if cycle == 1 else int(rng_would.random() < q_map[cid])
+                int(df.loc[df["CustomerID"].astype(str).eq(cid), "Churn Value"].iloc[0])
+                if cycle == 1
+                else int(rng_would.random() < q_map[cid])
             )
             accepted = bool(crm_result and crm_result.executed)
             saved = int(bool(accepted and would and rng_saved.random() < r_true))
@@ -207,7 +203,11 @@ def run_scenario(
                     "r_hat": r_hat,
                     "u_act": row["u_act"],
                     "u_noact": row["u_noact"],
-                    "rank": decisions_by_id[cid]["rank"],
+                    "rank": next(
+                        x["rank"]
+                        for x in selected["decisions"]
+                        if x["customer_id"] == cid
+                    ),
                     "k": selected["k"],
                     "selected": int(cid in selected_ids),
                     "action": "retention_campaign"

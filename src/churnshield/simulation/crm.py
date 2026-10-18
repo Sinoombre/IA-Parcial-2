@@ -37,13 +37,9 @@ class SimulatedCRM:
         self.timeout_rate = float(timeout_rate)
         self.rejected_rate = float(rejected_rate)
         self.error_rate = float(error_rate)
-        try:
-            retries = float(timeout_retries)
-        except (TypeError, ValueError) as exc:
-            raise ValueError("timeout_retries debe ser un entero no negativo") from exc
-        if not np.isfinite(retries) or retries < 0 or not retries.is_integer():
-            raise ValueError("timeout_retries debe ser un entero no negativo")
-        self.timeout_retries = int(retries)
+        self.timeout_retries = int(timeout_retries)
+        if self.timeout_retries < 0:
+            raise ValueError("timeout_retries no puede ser negativo")
         self._results: dict[str, CRMResult] = {}
 
     def _one_attempt(
@@ -62,12 +58,8 @@ class SimulatedCRM:
         self, campaign_id: str, customer_id: str, rng: np.random.Generator
     ) -> CRMResult:
         """Envía una campaña; repetir el mismo ID nunca crea una segunda acción."""
-        customer_id = str(customer_id)
         if campaign_id in self._results:
-            previous = self._results[campaign_id]
-            if previous.customer_id != customer_id:
-                raise ValueError("campaign_id ya fue utilizado para otro customer_id")
-            return previous
+            return self._results[campaign_id]
         attempts = 0
         outcome = "timeout"
         first_outcome = ""

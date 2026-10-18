@@ -11,7 +11,7 @@ import pandas as pd
 
 from .crm import SimulatedCRM
 from .paths import evaluator_output_path
-from ..data import load_dev_and_full
+from ..data import load_dev, _read_and_validate
 from ..decision import select_candidates
 from ..model import oof_predictions, select_C
 from ..oracle import oracle_oof_predictions, subset_by_customer_id
@@ -67,24 +67,21 @@ def simulate_cohort(
 
     rng = _streams(repetition_seed)
     mean_cltv = float(df["CLTV"].mean())
-    cltv_by_id = dict(zip(ids, df["CLTV"].astype(float)))
     active = {customer_id for customer_id in ids}
     historical = _cycle1_truth(df)
     public_rows: list[dict] = []
     truth_rows: list[dict] = []
 
     for cycle in range(1, cycles + 1):
+        active_df = df[df["CustomerID"].astype(str).isin(active)].copy()
         rows = []
-        for customer_id in ids:
-            if customer_id not in active:
-                continue
+        for _, row in active_df.iterrows():
+            customer_id = str(row["CustomerID"])
             rows.append(
                 {
                     "customer_id": customer_id,
                     "p_churn": float(p_churn[customer_id]),
-                    "v_cliente": (
-                        cltv_by_id[customer_id] / mean_cltv if mean_cltv else 1.0
-                    ),
+                    "v_cliente": float(row["CLTV"]) / mean_cltv if mean_cltv else 1.0,
                 }
             )
 
@@ -156,7 +153,8 @@ def development_inputs() -> tuple[
     pd.DataFrame, dict[str, float], dict[str, float], dict
 ]:
     """Prepara la cohorte de 5.634 con p OOF y q oculto de la población completa."""
-    dev, full, meta = load_dev_and_full()
+    dev, meta = load_dev()
+    full, _ = _read_and_validate()
     from ..features import ALLOWED_PREDICTORS
 
     X, y, ids = (

@@ -30,7 +30,8 @@ def test_compare_selects_best_candidate_and_saves_result(monkeypatch, tmp_path):
         return predictions, folds
 
     monkeypatch.setattr(random_forest, "oof_predictions", fake_oof_predictions)
-    monkeypatch.chdir(tmp_path)
+    artifact_dir = tmp_path / "artifacts" / "experiments" / "random_forest"
+    monkeypatch.setattr(random_forest, "ARTIFACT_DIR", artifact_dir)
 
     result = random_forest.compare_random_forest(
         pd.DataFrame(index=range(len(y))), y, ids
@@ -41,7 +42,7 @@ def test_compare_selects_best_candidate_and_saves_result(monkeypatch, tmp_path):
     assert result["chosen_config"] == random_forest.RF_CONFIGS["rf_regularized"]
     assert len(result["candidates"]) == len(random_forest.RF_CONFIGS)
     saved = json.loads(
-        (tmp_path / "artifacts" / "random_forest_comparison.json").read_text()
+        (artifact_dir / "random_forest_comparison.json").read_text()
     )
     assert saved["chosen_model"] == "rf_regularized"
 
@@ -74,5 +75,5 @@ def test_main_prints_reduced_json_and_saves_detailed_result(monkeypatch, capsys)
     assert output["chosen_model"] == "rf_regularized"
     assert output["dev_rows"] == 2
     assert output["metrics"]["auc"] == 0.8
-    assert output["detailed_results"] == "artifacts/random_forest_comparison.json"
+    assert output["detailed_results"] == random_forest.ARTIFACT_RELATIVE_PATH
     assert saved == [result]

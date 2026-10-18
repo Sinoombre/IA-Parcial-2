@@ -20,6 +20,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+ARTIFACT_DIR = REPO_ROOT / "artifacts" / "experiments" / "logistic_regression"
+ARTIFACT_RELATIVE_PATH = "artifacts/experiments/logistic_regression/logistic_regression_comparison.json"
 SRC_ROOT = str(REPO_ROOT / "src")
 if SRC_ROOT not in sys.path:
     sys.path.insert(0, SRC_ROOT)
@@ -105,8 +107,10 @@ def compare_logistic_regression(X: pd.DataFrame, y: pd.Series, ids: pd.Series) -
 
 
 def save_comparison(result: dict) -> None:
-    Path("artifacts").mkdir(exist_ok=True)
-    Path("artifacts/logistic_regression_comparison.json").write_text(json.dumps(result, indent=2, default=float))
+    ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
+    (ARTIFACT_DIR / "logistic_regression_comparison.json").write_text(
+        json.dumps(result, indent=2, default=float)
+    )
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -132,7 +136,7 @@ def main(argv: list[str] | None = None) -> None:
             key: chosen[key]
             for key in ("precision_at_15", "recall_at_15", "lift_at_15", "auc", "log_loss")
         },
-        "detailed_results": "artifacts/logistic_regression_comparison.json",
+        "detailed_results": ARTIFACT_RELATIVE_PATH,
     }
     print(json.dumps(summary, indent=2))
 

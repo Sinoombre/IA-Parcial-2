@@ -6,12 +6,24 @@ import math
 from typing import Iterable, Mapping
 
 
-def _sort_key(row: Mapping[str, object]) -> tuple[float, float, str]:
-    """Orden contractual: utilidad desc., probabilidad desc., ID asc."""
-    return (-float(row["u_act"]), -float(row["p_churn"]), str(row["customer_id"]))
+def _sort_key(row: Mapping[str, object], ranking: str) -> tuple[float, float, str]:
+    """Orden contractual para una política explícita y reproducible."""
+    if ranking == "utility":
+        return (-float(row["u_act"]), -float(row["p_churn"]), str(row["customer_id"]))
+    
+    if ranking == "probability":
+        return (-float(row["p_churn"]), -float(row["u_act"]), str(row["customer_id"]))
+    
+    raise ValueError("ranking debe ser 'utility' o 'probability'")
 
 
-def select_candidates(rows: Iterable[Mapping[str, object]], capacity_fraction: float = 0.15) -> dict:
+def select_candidates(
+    rows: Iterable[Mapping[str, object]],
+    capacity_fraction: float = 0.15,
+    *,
+    ranking: str = "utility",
+) -> dict:
+    
     """Selecciona como máximo floor(fraction*N) candidatos con utilidad positiva.
 
     La función no ejecuta campañas y no necesita modelo entrenado. Es determinista
@@ -23,7 +35,7 @@ def select_candidates(rows: Iterable[Mapping[str, object]], capacity_fraction: f
     
     n_active = len(rows)
     k = math.floor(capacity_fraction * n_active)
-    ranked = sorted(rows, key=_sort_key)
+    ranked = sorted(rows, key=lambda row: _sort_key(row, ranking))
     candidates = [row for row in ranked if float(row["u_act"]) > 0.0]
     selected = candidates[:k]
     selected_ids = {str(row["customer_id"]) for row in selected}
@@ -35,6 +47,7 @@ def select_candidates(rows: Iterable[Mapping[str, object]], capacity_fraction: f
         item["selected"] = str(row["customer_id"]) in selected_ids
         item["action"] = "retention_campaign" if item["selected"] else "no_action"
         decisions.append(item)
+        
     return {
         "n_active": n_active,
         "k": k,

@@ -23,7 +23,13 @@ def dataset_path() -> Path:
 
 
 def partition_path() -> Path:
-    return _resolve("artifacts/particion_prueba_indices.csv", str(REPO_ROOT / "entrega_manus/particion_prueba_indices.csv"), "particion_prueba_indices.csv")
+    return _resolve(
+        "artifacts/data/particion_prueba_indices.csv",
+        str(REPO_ROOT / "artifacts/data/particion_prueba_indices.csv"),
+        "artifacts/particion_prueba_indices.csv",
+        str(REPO_ROOT / "entrega_manus/particion_prueba_indices.csv"),
+        "particion_prueba_indices.csv",
+    )
 
 
 def dataset_sha256(path: Path | None = None) -> str:

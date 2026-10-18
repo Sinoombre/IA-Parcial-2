@@ -1,4 +1,4 @@
-"""Pruebas de robustez del pipeline que alimentan la evidencia de Fase 5."""
+"""Pruebas de robustez del pipeline para registrar evidencia experimental."""
 
 from __future__ import annotations
 

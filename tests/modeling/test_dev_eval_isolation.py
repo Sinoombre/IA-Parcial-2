@@ -30,12 +30,19 @@ def test_dev_eval_uses_only_development_loader(monkeypatch, tmp_path):
     }
     monkeypatch.setattr(dev_eval, "load_dev", lambda: (development, metadata))
     monkeypatch.setattr(
-        dev_eval, "select_C", lambda *args: (0.1, pd.DataFrame(), pd.DataFrame())
+        dev_eval,
+        "select_C",
+        lambda *args, **kwargs: (0.1, pd.DataFrame(), pd.DataFrame()),
     )
     monkeypatch.setattr(
         dev_eval,
         "oof_predictions",
-        lambda X, y, ids, C: np.linspace(0.1, 0.8, len(X)),
+        lambda X, y, ids, C, **kwargs: np.linspace(0.1, 0.8, len(X)),
+    )
+    monkeypatch.setattr(
+        dev_eval,
+        "oof_stacking_predictions",
+        lambda X, y, **kwargs: np.linspace(0.2, 0.9, len(X)),
     )
     monkeypatch.setattr(dev_eval, "precision_at_k", lambda *args: (0.5, 1))
     monkeypatch.setattr(dev_eval, "recall_at_k", lambda *args: (0.5, 1))
@@ -64,7 +71,9 @@ def test_dev_eval_uses_only_development_loader(monkeypatch, tmp_path):
         with open(path, "wb") as handle:
             handle.write(b"model")
 
-    monkeypatch.setattr(dev_eval, "make_pipeline", lambda C: FakePipeline())
+    monkeypatch.setattr(
+        dev_eval, "make_stacking_pipeline", lambda **kwargs: FakePipeline()
+    )
     monkeypatch.setattr(joblib, "dump", write_fake_model)
     monkeypatch.setattr(dev_eval, "_git_commit", lambda: "test-commit")
     monkeypatch.setattr(dev_eval, "_git_clean", lambda: True)
@@ -92,3 +101,4 @@ def test_dev_eval_uses_only_development_loader(monkeypatch, tmp_path):
     assert manifest["features"] == list(ALLOWED_PREDICTORS)
     assert manifest["partition_sha256"] == "partition"
     assert manifest["reserved_evaluation_executed"] is False
+    assert manifest["model_type"] == "stacking_logistic_lightgbm_xgboost_catboost"

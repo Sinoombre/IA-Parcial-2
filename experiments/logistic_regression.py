@@ -41,7 +41,7 @@ from churnshield.data import load_dev
 NUMERIC = ["Tenure Months", "Monthly Charges", "Total Charges"]
 CATEGORICAL = [c for c in ALLOWED_PREDICTORS if c not in NUMERIC]
 # Mismas semillas que el Random Forest: así los folds coinciden.
-LR_SEEDS = (1702, 1703, 1704)
+LR_SEEDS = (2006, 2007, 2008)
 # Penalización L2 (por defecto en scikit-learn). C es la inversa de la fuerza
 # de regularización: C pequeño = más regularización.
 LR_CONFIGS = {

@@ -41,6 +41,8 @@ features:
   cltv_usage: "solo_utilidad_no_predictor"
 
 data:
+  dataset_path: "data/Telco_customer_churn.xlsx"
+  reserved_partition_path: "artifacts/particion_prueba_indices.csv"
   target: "Churn Value"
   total_charges_missing: "imputar_0_y_conservar_filas"
   numeric_imputation_fallback: "median_train"
@@ -67,6 +69,10 @@ utility:
 model:
   base: "logistic_regression_l2"
   cv_folds: 5
+  cv_repeats: 3
+  c_grid: [0.01, 0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
+  max_iter: 2000
+  class_weight: null
   selection_metric: "precision_at_15"
   tie_break_metric: "log_loss"
   random_forest_comparison: true
@@ -103,3 +109,9 @@ phase1:
   learning_implemented: false
   final_s01_executed: false
   secrets_in_config: false
+
+phase2:
+  status: "implementada_en_desarrollo_no_evaluacion_final"
+  reserved_partition_used: false
+  s01_executed: false
+  final_evaluation_flag_required: true

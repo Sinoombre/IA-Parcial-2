@@ -58,6 +58,34 @@ def main() -> None:
         default=None,
         help="semillas exactas esperadas junto con --expected-scenarios",
     )
+    report_parser = sub.add_parser(
+        "scenario-report",
+        help="genera un resumen ejecutivo por escenario en JSON, CSV y Markdown",
+    )
+    report_parser.add_argument(
+        "--input-dir", default="artifacts/public/scenarios"
+    )
+    report_parser.add_argument(
+        "--evaluation",
+        default="artifacts/public/scenario_evaluation/evaluation.json",
+    )
+    report_parser.add_argument(
+        "--output-dir", default="artifacts/public/scenario_report"
+    )
+    report_parser.add_argument(
+        "--expected-scenarios",
+        nargs="+",
+        choices=SCENARIOS,
+        default=None,
+    )
+    report_parser.add_argument(
+        "--expected-seeds", nargs="+", type=int, default=None
+    )
+    report_parser.add_argument(
+        "--all-seeds",
+        action="store_true",
+        help="espera las semillas 101..105 para todos los escenarios S02..S10",
+    )
     final_evaluator = sub.add_parser(
         "evaluate-final",
         help="ejecuta la evaluación final reservada con autorización explícita",
@@ -183,6 +211,40 @@ def main() -> None:
             output_path.parent.mkdir(parents=True, exist_ok=True)
             output_path.write_text(rendered + "\n", encoding="utf-8")
         print(rendered)
+        return
+    if args.command == "scenario-report":
+        if args.all_seeds and (
+            args.expected_scenarios is not None or args.expected_seeds is not None
+        ):
+            raise SystemExit(
+                "--all-seeds no se puede combinar con --expected-scenarios/--expected-seeds"
+            )
+        if (args.expected_scenarios is None) != (args.expected_seeds is None):
+            raise SystemExit(
+                "--expected-scenarios y --expected-seeds deben usarse juntos"
+            )
+        expected_runs = None
+        if args.all_seeds:
+            expected_runs = {
+                (scenario, seed)
+                for scenario in SCENARIOS
+                for seed in (101, 102, 103, 104, 105)
+            }
+        elif args.expected_scenarios is not None:
+            expected_runs = {
+                (scenario, seed)
+                for scenario in args.expected_scenarios
+                for seed in args.expected_seeds
+            }
+        from .scenario_report import generate_scenario_report
+
+        result = generate_scenario_report(
+            input_dir=args.input_dir,
+            evaluation_path=args.evaluation,
+            output_dir=args.output_dir,
+            expected_runs=expected_runs,
+        )
+        print(json.dumps(result, indent=2, default=float))
         return
     if args.command == "evaluate-final":
         from .final_eval import run_final_evaluation

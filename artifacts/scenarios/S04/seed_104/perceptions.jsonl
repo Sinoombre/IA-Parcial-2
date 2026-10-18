@@ -1,0 +1,6 @@
+{"run_id": "S04-104", "scenario_id": "S04", "seed": 104, "cycle": 1, "timestamp_utc": "2026-01-01T00:00:00Z", "customer_id": "F4-000", "p_churn": 0.9, "v_cliente": 0.18181818181818182, "segment": "high", "r_hat": 0.25}
+{"run_id": "S04-104", "scenario_id": "S04", "seed": 104, "cycle": 1, "timestamp_utc": "2026-01-01T00:00:01Z", "customer_id": "F4-001", "p_churn": 0.74, "v_cliente": 0.509090909090909, "segment": "high", "r_hat": 0.25}
+{"run_id": "S04-104", "scenario_id": "S04", "seed": 104, "cycle": 1, "timestamp_utc": "2026-01-01T00:00:02Z", "customer_id": "F4-002", "p_churn": 0.5800000000000001, "v_cliente": 0.8363636363636363, "segment": "medium", "r_hat": 0.25}
+{"run_id": "S04-104", "scenario_id": "S04", "seed": 104, "cycle": 1, "timestamp_utc": "2026-01-01T00:00:03Z", "customer_id": "F4-003", "p_churn": 0.42000000000000004, "v_cliente": 1.1636363636363636, "segment": "medium", "r_hat": 0.25}
+{"run_id": "S04-104", "scenario_id": "S04", "seed": 104, "cycle": 1, "timestamp_utc": "2026-01-01T00:00:04Z", "customer_id": "F4-004", "p_churn": 0.26, "v_cliente": 1.490909090909091, "segment": "low", "r_hat": 0.25}
+{"run_id": "S04-104", "scenario_id": "S04", "seed": 104, "cycle": 1, "timestamp_utc": "2026-01-01T00:00:05Z", "customer_id": "F4-005", "p_churn": 0.1, "v_cliente": 1.8181818181818181, "segment": "low", "r_hat": 0.25}

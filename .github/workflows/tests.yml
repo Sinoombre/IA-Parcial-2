@@ -1,4 +1,4 @@
-name: Phases and tests
+name: Tests and CLI checks
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  phases:
+  checks:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,16 +28,22 @@ jobs:
 
       - name: Compilar código y pruebas
         run: |
-          python -m compileall -q src/churnshield experiments tests/fase1 tests/fase2 tests/fase3 tests/experiments
+          python -m compileall -q src/churnshield experiments tests
 
       - name: Ejecutar pruebas
         env:
           PYTHONPATH: src
         run: |
-          python -m pytest -q tests/fase1 tests/fase2 tests/fase3 tests/experiments
+          python -m pytest -q
 
-      - name: Probar escenario S03 de Fase 1
+      - name: Probar escenario S03 del agente
         env:
           PYTHONPATH: src
         run: |
           python -m churnshield run --scenario S03
+
+      - name: Probar escenario S02 de retención
+        env:
+          PYTHONPATH: src
+        run: |
+          python -m churnshield scenarios --scenario S02 --seed 101

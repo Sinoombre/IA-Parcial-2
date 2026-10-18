@@ -1,0 +1,14 @@
+{
+  "scenario": "S02",
+  "synthetic": true,
+  "unknown_category": false,
+  "seed": 105,
+  "cycles": 6,
+  "r_hat_final": 0.3181818181818182,
+  "records": 179,
+  "output_dir": "artifacts\\scenarios\\S02\\seed_105",
+  "crm_statuses": [
+    "accepted",
+    "not_sent"
+  ]
+}

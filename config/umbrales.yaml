@@ -1,4 +1,4 @@
-version: "fase-1"
+version: "draft-v1"
 estado: "BORRADOR: Se debe volver a revisar antes de realizar el S01 (Simulacion 1)"
 fecha_confirmacion: null
 
@@ -38,6 +38,6 @@ diagnosticos_sin_umbral_formal:
 
 protocolo:
   ranking_top15: "capacidad floor(0.15*N); ordenar por u_act descendente, p_churn descendente y customer_id ascendente; conservar solo u_act > 0"
-  prueba_reservada: "No usar en Fase 1; bloquear hasta confirmación final"
+  prueba_reservada: "No usar hasta confirmación final; mantener bloqueada"
   bootstrap_m1: "10 remuestreos estratificados con semillas 1..10; diagnóstico de variabilidad, no cambia el criterio puntual M1"
   confirmacion_pareja_requerida: true

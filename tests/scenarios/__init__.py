@@ -1,1 +1,1 @@
-"""Pruebas de escenarios por fase."""
+"""Pruebas de escenarios."""

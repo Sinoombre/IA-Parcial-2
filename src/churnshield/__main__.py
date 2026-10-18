@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
-
 from .s03 import run as run_s03
 
 
@@ -17,15 +15,16 @@ def main() -> None:
     run.add_argument("--config", default="config/agente.yaml")
     run.add_argument("--json", action="store_true")
     sub.add_parser("dev-eval")
-    phase3 = sub.add_parser("phase3")
-    phase3.add_argument("--repetition-seed", type=int, default=101)
-    phase3.add_argument("--output-dir", default="artifacts/phase3")
-    phase4 = sub.add_parser("phase4")
-    phase4.add_argument("--scenario", choices=["S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "S10"])
-    phase4.add_argument("--all", action="store_true")
-    phase4.add_argument("--repetition-seed", type=int, default=101)
-    phase4.add_argument("--all-seeds", action="store_true")
-    phase4.add_argument("--output-dir", default="artifacts/phase4")
+    simulation = sub.add_parser("simulate", help="ejecuta la simulación longitudinal de cohortes")
+    simulation.add_argument("--seed", type=int, default=101)
+    simulation.add_argument("--output-dir", default="artifacts/cohort_simulation")
+    scenario_parser = sub.add_parser("scenarios", help="ejecuta escenarios de retención")
+    from .scenarios.retention import SCENARIOS
+    scenario_parser.add_argument("--scenario", choices=SCENARIOS)
+    scenario_parser.add_argument("--all", action="store_true")
+    scenario_parser.add_argument("--seed", type=int, default=101)
+    scenario_parser.add_argument("--all-seeds", action="store_true")
+    scenario_parser.add_argument("--output-dir", default="artifacts/scenarios")
     args = parser.parse_args()
     if args.command == "run" and args.scenario.upper() == "S03":
         result = run_s03()
@@ -43,24 +42,24 @@ def main() -> None:
         from .dev_eval import run_dev_eval
         print(json.dumps(run_dev_eval(), indent=2, default=float))
         return
-    if args.command == "phase3":
-        from .simulation.phase3 import run_phase3
-        print(json.dumps(run_phase3(repetition_seed=args.repetition_seed, output_dir=args.output_dir), indent=2, default=float))
+    if args.command == "simulate":
+        from .simulation.cohort import run_simulation
+        print(json.dumps(run_simulation(repetition_seed=args.seed, output_dir=args.output_dir), indent=2, default=float))
         return
-    if args.command == "phase4":
-        from .simulation.phase4 import SCENARIOS, run_many, run_scenario
+    if args.command == "scenarios":
+        from .simulation.scenario_runner import run_many, run_scenario
         if args.all:
-            scenarios = SCENARIOS
+            selected_scenarios = SCENARIOS
         elif args.scenario:
-            scenarios = (args.scenario,)
+            selected_scenarios = (args.scenario,)
         else:
-            raise SystemExit("phase4 requiere --scenario S02..S10 o --all")
+            raise SystemExit("scenarios requiere --scenario S02..S10 o --all")
         if args.all_seeds:
-            print(json.dumps(run_many(scenarios, output_dir=args.output_dir), indent=2, default=float))
+            print(json.dumps(run_many(selected_scenarios, output_dir=args.output_dir), indent=2, default=float))
         else:
-            print(json.dumps([run_scenario(s, seed=args.repetition_seed, output_dir=args.output_dir) for s in scenarios], indent=2, default=float))
+            print(json.dumps([run_scenario(s, seed=args.seed, output_dir=args.output_dir) for s in selected_scenarios], indent=2, default=float))
         return
-    raise SystemExit("Fase 1 solo implementa el escenario S03")
+    raise SystemExit("Solo está implementado el escenario S03 para el comando run")
 
 
 if __name__ == "__main__":

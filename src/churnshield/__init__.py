@@ -1,4 +1,4 @@
-"""Núcleo mínimo de ChurnShield-Agent para la Fase 1."""
+"""Núcleo de ChurnShield-Agent."""
 
 from .decision import select_candidates
 

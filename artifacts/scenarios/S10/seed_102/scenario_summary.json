@@ -1,0 +1,17 @@
+{
+  "scenario": "S10",
+  "synthetic": true,
+  "unknown_category": false,
+  "seed": 102,
+  "cycles": 1,
+  "r_hat_final": 0.4506104328523862,
+  "records": 100,
+  "output_dir": "artifacts\\scenarios\\S10\\seed_102",
+  "crm_statuses": [
+    "accepted",
+    "crm_error",
+    "error",
+    "not_sent",
+    "rejected"
+  ]
+}

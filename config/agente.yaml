@@ -1,5 +1,5 @@
-version: "fase-1-borrador"
-estado: "BORRADOR: Se debe volver a revisar antes de realizar el S01 (Simulacion 1)"
+version: "borrador-v1"
+estado: "BORRADOR: Revisar antes de autorizar S01 (Simulacion 1)"
 
 features:
 features:
@@ -76,7 +76,7 @@ model:
   final_test_locked: true
 
 simulation:
-  status: "pendiente_fase_posterior"
+  status: "pending"
   cycles: 6
   master_seed: 1702
   repetition_seeds: [101, 102, 103, 104, 105]
@@ -85,19 +85,19 @@ simulation:
   truth_fields_evaluator_only: ["would_churn", "saved", "q_i"]
 
 learning:
-  status: "pendiente_fase_posterior"
+  status: "pending"
   segments: "risk_terciles_from_train"
   m0: 10
   update_formula: "(m0 * r0 + E - O) / (m0 + E)"
   update_timing: "end_cycle_use_next_cycle"
 
 crm:
-  status: "pendiente_fase_posterior"
+  status: "pending"
   campaign_type: "retention_campaign"
   outcomes: ["accepted", "rejected", "error", "timeout"]
   timeout_retries: 1
 
-phase1:
+agent_run:
   scenario: "S03"
   synthetic_clients: 50
   models_trained: false

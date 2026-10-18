@@ -4,7 +4,7 @@ from pathlib import Path
 import hashlib
 import pandas as pd
 
-EXPECTED_SHA256 = "1bcbc0ccc9b352175216979102628e579cfbde2c3ff57b005de168a433122640" #
+EXPECTED_SHA256 = "1bcbc0ccc9b352175216979102628e579cfbde2c3ff57b005de168a433122640" 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 

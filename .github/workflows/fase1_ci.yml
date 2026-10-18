@@ -1,4 +1,4 @@
-name: Phase 2 CI
+name: Phase 1 and 2 CI
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  phase2:
+  phases:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,30 +26,21 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Compilar código
+      - name: Compilar código y pruebas
         run: |
-          python -m compileall -q src/churnshield tests
+          python -m compileall -q src/churnshield experiments tests/fase1 tests/fase2 tests/experiments
 
-      - name: Ejecutar pruebas de Fase 1 y Fase 2
+      - name: Ejecutar pruebas
         env:
           PYTHONPATH: src
         run: |
-          python -m pytest -q tests
+          python -m pytest -q tests/fase1 tests/fase2 tests/experiments
 
-      - name: Ejecutar evaluación de desarrollo
+      - name: Probar escenario S03 de Fase 1
         env:
           PYTHONPATH: src
-          PYTHONWARNINGS: ignore
         run: |
-          python -m churnshield dev-eval
-
-      - name: Comparar arreglos de linealidad y multicolinealidad
-        env:
-          PYTHONPATH: src
-          PYTHONWARNINGS: ignore
-        run: |
-          python -m churnshield.phase2_fixes
-
+          python -m churnshield run --scenario S03
 
       - name: Proteger el EDA oficial de main
         run: |

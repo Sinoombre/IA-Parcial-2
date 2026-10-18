@@ -1,5 +1,5 @@
 {
-  "model_sha256": "c07dc2e4c0c873c66d54170e208056d64b4817688fec4b7cf628248051b811b5",
+  "model_sha256": "434db8821e2fd342a4a86e78d2022706357afde875f3610d394ffb1e6fa6d069",
   "dataset_sha256": "1bcbc0ccc9b352175216979102628e579cfbde2c3ff57b005de168a433122640",
   "partition_sha256": "d7d8ca6501a7c2ad951f5b6991fe0756ad6df077cbdbcbef62e66e23e49c9514",
   "config_sha256": "ec7cfc65f2cbabfea947803b33fdc353252db4f8814b0060c3b468040ddd21ab",
@@ -23,6 +23,6 @@
   "mean_cltv_train": 4387.761625843095,
   "reserved_evaluation_executed": false,
   "model_file": "model_v1.joblib",
-  "commit_hash": "ce1a993cec1f11d458af64206c1bb6181ef191b8",
+  "commit_hash": "7b458a6a3eddac44744a792160350ae7bf6ce9a9",
   "working_tree_clean": false
 }

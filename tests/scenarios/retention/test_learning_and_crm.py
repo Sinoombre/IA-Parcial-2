@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 
 from churnshield.simulation.crm import SimulatedCRM
+from churnshield.simulation import paths
 from churnshield.simulation.scenario_runner import (
     _timestamp,
     run_many,
@@ -99,17 +100,28 @@ def test_run_many_reuses_generator_seeds_for_every_scenario(tmp_path):
         iter(("S04", "S06")),
         seeds=(seed for seed in (101, 102)),
         output_dir=tmp_path / "public",
-        evaluator_output_dir=tmp_path / "truth",
+        evaluator_output_dir=paths.PRIVATE_EVALUATOR_ROOT / "custom-truth",
     )
     assert len(summaries) == 4
     assert (tmp_path / "public" / "scenario_summary.csv").exists()
-    assert (tmp_path / "truth" / "S04" / "seed_102" / "evaluator_truth.csv").exists()
+    assert (
+        paths.PRIVATE_EVALUATOR_ROOT
+        / "custom-truth"
+        / "S04"
+        / "seed_102"
+        / "evaluator_truth.csv"
+    ).exists()
 
 
-def test_public_and_evaluator_output_paths_must_not_overlap(tmp_path):
+def test_public_and_evaluator_output_paths_must_not_overlap(tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        paths,
+        "PRIVATE_EVALUATOR_ROOT",
+        tmp_path / "artifacts" / "private" / "evaluator_truth",
+    )
     with pytest.raises(ValueError, match="carpetas separadas"):
         run_scenario(
             "S02",
             output_dir=tmp_path,
-            evaluator_output_dir=tmp_path / "truth",
+            evaluator_output_dir=paths.PRIVATE_EVALUATOR_ROOT,
         )

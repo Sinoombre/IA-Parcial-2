@@ -4,7 +4,7 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CONFIG = ROOT / "config" / "agente.yaml"
+CONFIG = ROOT / "config" / "agent.yaml"
 
 
 def test_config_has_initial_agent_contract():

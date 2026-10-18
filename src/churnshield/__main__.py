@@ -12,7 +12,7 @@ def main() -> None:
     sub = parser.add_subparsers(dest="command", required=True)
     run = sub.add_parser("run")
     run.add_argument("--scenario", required=True)
-    run.add_argument("--config", default="config/agente.yaml")
+    run.add_argument("--config", default="config/agent.yaml")
     run.add_argument("--json", action="store_true")
     dev_evaluation = sub.add_parser(
         "dev-eval", help="entrena y evalúa usando únicamente desarrollo"

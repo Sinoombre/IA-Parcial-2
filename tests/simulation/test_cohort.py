@@ -61,7 +61,10 @@ def test_run_simulation_writes_evaluator_truth_separately(
 
     public_dir = tmp_path / "public"
     evaluator_file = (
-        tmp_path / "evaluator_truth" / "cohort_simulation" / "evaluator_truth.csv"
+        tmp_path.parent
+        / f"{tmp_path.name}-private-evaluator-truth"
+        / "cohort_simulation"
+        / "evaluator_truth.csv"
     )
     assert (public_dir / "cohort_public.csv").exists()
     assert not (public_dir / "evaluator_truth.csv").exists()
@@ -74,9 +77,39 @@ def test_public_artifact_output_routes_evaluator_truth_to_ignored_tree(tmp_path)
 
     output_dir = tmp_path / "artifacts" / "public" / "scenarios"
 
-    assert evaluator_output_path(output_dir, None) == (
-        tmp_path / "artifacts" / "private" / "evaluator_truth"
+    assert (
+        evaluator_output_path(output_dir, None)
+        == tmp_path.parent / f"{tmp_path.name}-private-evaluator-truth"
     )
+
+
+def test_evaluator_output_rejects_public_or_unrelated_destinations(
+    tmp_path, monkeypatch
+):
+    from churnshield.simulation import paths
+
+    output_dir = tmp_path / "artifacts" / "public" / "scenarios"
+    private_root = tmp_path / "artifacts" / "private" / "evaluator_truth"
+    monkeypatch.setattr(paths, "PRIVATE_EVALUATOR_ROOT", private_root)
+
+    for destination in (
+        tmp_path / "artifacts" / "public" / "truth",
+        tmp_path / "artifacts" / "private" / "other",
+        tmp_path / "outside" / "evaluator_truth",
+    ):
+        with pytest.raises(ValueError, match="artifacts/private/evaluator_truth"):
+            paths.evaluator_output_path(output_dir, destination)
+
+
+def test_evaluator_output_allows_only_private_truth_tree(tmp_path, monkeypatch):
+    from churnshield.simulation import paths
+
+    output_dir = tmp_path / "artifacts" / "public" / "scenarios"
+    private_root = tmp_path / "artifacts" / "private" / "evaluator_truth"
+    monkeypatch.setattr(paths, "PRIVATE_EVALUATOR_ROOT", private_root)
+    destination = private_root / "scenarios"
+
+    assert paths.evaluator_output_path(output_dir, destination) == destination
 
 
 def test_development_inputs_generates_oracle_truth_from_development_only(

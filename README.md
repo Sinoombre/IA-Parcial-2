@@ -24,7 +24,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 ## Configuración del modelo
 
-`config/agente.yaml` es la fuente canónica de predictores. El modelo, la
+`config/agent.yaml` es la fuente canónica de predictores. El modelo, la
 evaluación y la interfaz usan exactamente sus nueve campos `allowed_predictors`;
 las ocho columnas bajo `excluded_by_design` no se usan como features. El
 model card y el manifiesto registran ese mismo conjunto y los hashes del
@@ -114,7 +114,7 @@ S01 permanece bloqueado para el uso rutinario. No se ejecuta con pytest,
 se requiere:
 
 - commit fijado y árbol Git limpio;
-- hashes coincidentes del dataset, partición, `agente.yaml` y `umbrales.yaml`;
+- hashes coincidentes del dataset, partición, `agent.yaml` y `thresholds.yaml`;
 - archivo de autorización fuera del repositorio con dos aprobadores distintos,
   referencia y fecha con zona horaria;
 - directorio de salida nuevo e inexistente.

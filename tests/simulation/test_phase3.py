@@ -1,4 +1,4 @@
-from churnshield.phase3 import simulate_cohort
+from churnshield.simulation.phase3 import simulate_cohort
 
 
 def test_simulation_is_reproducible_and_hides_truth(small_df, simulation_inputs):

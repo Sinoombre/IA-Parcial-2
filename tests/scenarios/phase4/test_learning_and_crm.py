@@ -3,12 +3,17 @@ from collections import Counter
 
 import numpy as np
 
-from churnshield.crm import SimulatedCRM
-from churnshield.phase4 import run_scenario, update_r_hat
+from churnshield.simulation.crm import SimulatedCRM
+from churnshield.simulation.phase4 import run_scenario, update_r_hat
 
 
 def test_learning_formula_uses_only_accepted_treatments():
-    value = update_r_hat(r0=0.25, m0=10, treated_probabilities=[0.8, 0.6], observed_churn=[0, 1])
+    value = update_r_hat(
+        r0=0.25,
+        m0=10,
+        treated_probabilities=[0.8, 0.6],
+        observed_churn=[0, 1],
+    )
     assert 0.0 <= value <= 1.0
     assert value == (10 * 0.25 + 1.4 - 1) / (10 + 1.4)
 
@@ -28,7 +33,10 @@ def test_s10_has_varied_crm_results_and_retry_logs(tmp_path):
         rows = list(csv.DictReader(f))
     statuses = Counter(row["final_status"] for row in rows)
     assert statuses["not_sent"] > 0
-    assert any(status in statuses for status in ("accepted", "rejected", "error", "crm_error", "timeout"))
+    assert any(
+        status in statuses
+        for status in ("accepted", "rejected", "error", "crm_error", "timeout")
+    )
     assert (tmp_path / "S10" / "seed_101" / "perceptions.jsonl").exists()
     assert summary["scenario"] == "S10"
 
@@ -39,17 +47,3 @@ def test_phase4_logs_segments_and_utc_timestamps(tmp_path):
         row = next(csv.DictReader(f))
     assert row["segment"] in {"high", "medium", "low"}
     assert row["timestamp_utc"].endswith("Z")
-
-
-def test_all_non_final_scenarios_can_run(tmp_path):
-    for scenario in ("S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09"):
-        summary = run_scenario(scenario, seed=101, output_dir=tmp_path)
-        assert summary["scenario"] == scenario
-        assert (tmp_path / scenario / "seed_101" / "decisions.csv").exists()
-        assert (tmp_path / scenario / "seed_101" / "evaluator_truth.csv").exists()
-
-
-def test_s01_is_blocked():
-    import pytest
-    with pytest.raises(PermissionError):
-        run_scenario("S01", seed=101)

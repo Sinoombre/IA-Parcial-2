@@ -14,7 +14,7 @@ def main() -> None:
     sub = parser.add_subparsers(dest="command", required=True)
     run = sub.add_parser("run")
     run.add_argument("--scenario", required=True)
-    run.add_argument("--config", default="entrega_manus/config/agente.yaml")
+    run.add_argument("--config", default="config/agente.yaml")
     run.add_argument("--json", action="store_true")
     sub.add_parser("dev-eval")
     phase3 = sub.add_parser("phase3")
@@ -44,11 +44,11 @@ def main() -> None:
         print(json.dumps(run_dev_eval(), indent=2, default=float))
         return
     if args.command == "phase3":
-        from .phase3 import run_phase3
+        from .simulation.phase3 import run_phase3
         print(json.dumps(run_phase3(repetition_seed=args.repetition_seed, output_dir=args.output_dir), indent=2, default=float))
         return
     if args.command == "phase4":
-        from .phase4 import SCENARIOS, run_many, run_scenario
+        from .simulation.phase4 import SCENARIOS, run_many, run_scenario
         if args.all:
             scenarios = SCENARIOS
         elif args.scenario:

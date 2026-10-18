@@ -1,6 +1,6 @@
 import numpy as np
 
-from churnshield.crm import SimulatedCRM
+from churnshield.simulation.crm import SimulatedCRM
 
 
 def test_timeout_has_one_retry_and_is_idempotent():

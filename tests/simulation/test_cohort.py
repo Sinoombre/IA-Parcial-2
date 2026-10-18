@@ -17,7 +17,9 @@ def test_simulation_is_reproducible_and_hides_truth(small_df, simulation_inputs)
         "q_i" not in row and "would_churn" not in row and "saved" not in row
         for row in public1
     )
-    assert all({"q_i", "would_churn", "saved", "r_true"}.issubset(row) for row in truth1)
+    assert all(
+        {"q_i", "would_churn", "saved", "r_true"}.issubset(row) for row in truth1
+    )
 
 
 def test_cycle_one_uses_empirical_churn_and_absorbs_cancelled_clients(

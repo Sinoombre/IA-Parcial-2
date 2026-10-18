@@ -28,9 +28,7 @@ def build_fixture(
     if scenario.missing_first_cltv:
         cltv[0] = np.nan
 
-    df = pd.DataFrame(
-        {"CustomerID": ids, "CLTV": cltv, "Churn Value": historical}
-    )
+    df = pd.DataFrame({"CustomerID": ids, "CLTV": cltv, "Churn Value": historical})
     if scenario.missing_first_cltv:
         df["CLTV"] = df["CLTV"].fillna(df["CLTV"].median())
 

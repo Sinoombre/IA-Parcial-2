@@ -5,11 +5,13 @@ import pytest
 
 @pytest.fixture
 def small_df():
-    return pd.DataFrame({
-        "CustomerID": ["A", "B", "C", "D", "E", "F", "G"],
-        "CLTV": [100, 200, 300, 400, 500, 600, 700],
-        "Churn Value": [1, 0, 0, 1, 0, 0, 0],
-    })
+    return pd.DataFrame(
+        {
+            "CustomerID": ["A", "B", "C", "D", "E", "F", "G"],
+            "CLTV": [100, 200, 300, 400, 500, 600, 700],
+            "Churn Value": [1, 0, 0, 1, 0, 0, 0],
+        }
+    )
 
 
 @pytest.fixture

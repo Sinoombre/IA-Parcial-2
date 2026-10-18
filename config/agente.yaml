@@ -76,7 +76,7 @@ model:
   final_test_locked: true
 
 simulation:
-  status: "pending"
+  status: "implemented_phase4"
   cycles: 6
   master_seed: 1702
   repetition_seeds: [101, 102, 103, 104, 105]
@@ -85,14 +85,14 @@ simulation:
   truth_fields_evaluator_only: ["would_churn", "saved", "q_i"]
 
 learning:
-  status: "pending"
+  status: "implemented_phase4"
   segments: "risk_terciles_from_train"
   m0: 10
   update_formula: "(m0 * r0 + E - O) / (m0 + E)"
   update_timing: "end_cycle_use_next_cycle"
 
 crm:
-  status: "pending"
+  status: "implemented_phase4"
   campaign_type: "retention_campaign"
   outcomes: ["accepted", "rejected", "error", "timeout"]
   timeout_retries: 1
@@ -101,7 +101,7 @@ agent_run:
   scenario: "S03"
   synthetic_clients: 50
   models_trained: false
-  simulator_implemented: false
-  learning_implemented: false
+  simulator_implemented: true
+  learning_implemented: true
   final_s01_executed: false
   secrets_in_config: false

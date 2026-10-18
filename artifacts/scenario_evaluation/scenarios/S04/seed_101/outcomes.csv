@@ -1,0 +1,7 @@
+run_id,scenario_id,seed,cycle,timestamp_utc,customer_id,campaign_id,first_attempt_status,second_attempt_status,final_status,attempts,retry_used,executed
+S04-101,S04,101,1,2026-01-01T00:00:00Z,F4-000,,,,not_sent,0,0,0
+S04-101,S04,101,1,2026-01-01T00:00:01Z,F4-001,,,,not_sent,0,0,0
+S04-101,S04,101,1,2026-01-01T00:00:02Z,F4-002,,,,not_sent,0,0,0
+S04-101,S04,101,1,2026-01-01T00:00:03Z,F4-003,,,,not_sent,0,0,0
+S04-101,S04,101,1,2026-01-01T00:00:04Z,F4-004,,,,not_sent,0,0,0
+S04-101,S04,101,1,2026-01-01T00:00:05Z,F4-005,,,,not_sent,0,0,0

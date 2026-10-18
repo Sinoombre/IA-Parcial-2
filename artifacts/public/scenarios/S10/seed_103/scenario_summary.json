@@ -1,0 +1,19 @@
+{
+  "scenario": "S10",
+  "synthetic": true,
+  "unknown_category": false,
+  "missing_cell_count": 0,
+  "imputed_missing_count": 0,
+  "seed": 103,
+  "cycles": 1,
+  "r_hat_final": 0.39145212612091407,
+  "records": 100,
+  "output_dir": "artifacts\\public\\scenarios\\S10\\seed_103",
+  "crm_statuses": [
+    "accepted",
+    "crm_error",
+    "error",
+    "not_sent",
+    "rejected"
+  ]
+}

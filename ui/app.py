@@ -1,7 +1,7 @@
 """Interfaz local de demostración para predicciones de desarrollo.
 
 Este módulo nunca carga la partición reservada. Usa únicamente el modelo de
-`artifacts/dev_eval` y declara esa limitación en cada respuesta.
+`artifacts/public/dev_eval` y declara esa limitación en cada respuesta.
 """
 
 from __future__ import annotations
@@ -26,7 +26,9 @@ from churnshield.utility import action_utility
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_PATH = Path(
-    os.environ.get("CHURNSHIELD_MODEL", ROOT / "artifacts/dev_eval/model_v1.joblib")
+    os.environ.get(
+        "CHURNSHIELD_MODEL", ROOT / "artifacts/public/dev_eval/model_v1.joblib"
+    )
 )
 CARD_PATH = MODEL_PATH.with_name("model_card.json")
 DEFAULTS = {

@@ -12,17 +12,19 @@ def main() -> None:
     sub = parser.add_subparsers(dest="command", required=True)
     run = sub.add_parser("run")
     run.add_argument("--scenario", required=True)
-    run.add_argument("--config", default="config/agente.yaml")
+    run.add_argument("--config", default="config/agent.yaml")
     run.add_argument("--json", action="store_true")
     dev_evaluation = sub.add_parser(
         "dev-eval", help="entrena y evalúa usando únicamente desarrollo"
     )
-    dev_evaluation.add_argument("--output-dir", default="artifacts/dev_eval")
+    dev_evaluation.add_argument("--output-dir", default="artifacts/public/dev_eval")
     simulation = sub.add_parser(
         "simulate", help="ejecuta la simulación longitudinal de cohortes"
     )
     simulation.add_argument("--seed", type=int, default=101)
-    simulation.add_argument("--output-dir", default="artifacts/cohort_simulation")
+    simulation.add_argument(
+        "--output-dir", default="artifacts/public/cohort_simulation"
+    )
     simulation.add_argument("--evaluator-output-dir", default=None)
     scenario_parser = sub.add_parser(
         "scenarios", help="ejecuta escenarios de retención"
@@ -33,11 +35,13 @@ def main() -> None:
     scenario_parser.add_argument("--all", action="store_true")
     scenario_parser.add_argument("--seed", type=int, default=101)
     scenario_parser.add_argument("--all-seeds", action="store_true")
-    scenario_parser.add_argument("--output-dir", default="artifacts/scenarios")
+    scenario_parser.add_argument("--output-dir", default="artifacts/public/scenarios")
     scenario_parser.add_argument("--evaluator-output-dir", default=None)
     evaluator = sub.add_parser("evaluate", help="calcula M2 y M3 desde los logs")
-    evaluator.add_argument("--input-dir", default="artifacts/scenarios")
-    evaluator.add_argument("--output", default=None)
+    evaluator.add_argument("--input-dir", default="artifacts/public/scenarios")
+    evaluator.add_argument(
+        "--output", default="artifacts/public/scenario_evaluation/evaluation.json"
+    )
     evaluator.add_argument(
         "--expected-scenarios",
         nargs="+",
@@ -61,7 +65,9 @@ def main() -> None:
         action="store_true",
         help="confirma que la evaluación reservada fue autorizada",
     )
-    final_evaluator.add_argument("--output-dir", default="artifacts/final_evaluation")
+    final_evaluator.add_argument(
+        "--output-dir", default="artifacts/private/final_evaluation"
+    )
     final_evaluator.add_argument(
         "--authorization-file",
         default=None,
@@ -171,7 +177,9 @@ def main() -> None:
         result = evaluate_batch(args.input_dir, expected_runs=expected_runs)
         rendered = json.dumps(result, indent=2, default=float)
         if args.output:
-            Path(args.output).write_text(rendered + "\n", encoding="utf-8")
+            output_path = Path(args.output)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(rendered + "\n", encoding="utf-8")
         print(rendered)
         return
     if args.command == "evaluate-final":

@@ -1,2 +1,0 @@
-run_id,scenario_id,seed,cycle,r_hat_before,r_hat_after,treated_count,E,O,abs_error_to_r_true
-S10-103,S10,103,1,0.25,0.39145212612091407,8,3.967676767676768,1,0.04145212612091409

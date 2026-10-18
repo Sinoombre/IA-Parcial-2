@@ -1,2 +1,0 @@
-run_id,scenario_id,seed,cycle,n_active_before,k,n_selected,n_churned,n_active_after,r_hat_after
-S04-104,S04,104,1,6,0,0,2,4,0.25

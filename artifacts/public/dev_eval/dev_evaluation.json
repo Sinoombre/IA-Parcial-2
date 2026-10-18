@@ -1,0 +1,77 @@
+{
+  "metadata": {
+    "dataset_sha256": "1bcbc0ccc9b352175216979102628e579cfbde2c3ff57b005de168a433122640",
+    "partition_sha256": "d7d8ca6501a7c2ad951f5b6991fe0756ad6df077cbdbcbef62e66e23e49c9514",
+    "total_charges_blank_count": 5,
+    "reserved_count": 1409,
+    "dev_count": 5634,
+    "rows_used": 5634,
+    "split": "development",
+    "reserved_access": false
+  },
+  "chosen_C": 0.03,
+  "probability_ranking": {
+    "precision": 0.7065088757396449,
+    "recall": 0.39933110367892977,
+    "lift": 2.6625224119847224,
+    "auc": 0.8488687022296275,
+    "brier": 0.1349244440230749,
+    "log_loss": 0.4132639015074611,
+    "ece": 0.013671353411863582
+  },
+  "agent_utility_ranking": {
+    "precision": 0.6497041420118344,
+    "n_selected": 845,
+    "k": 845
+  },
+  "probability_with_utility_filter": {
+    "precision": 0.7065088757396449,
+    "n_selected": 845,
+    "k": 845
+  },
+  "spearman_p_churn_v": -0.2562786256960022,
+  "cv_summary": [
+    {
+      "C": 0.01,
+      "precision_mean": 0.7093383112613884,
+      "precision_sd": 0.0018370520478842487,
+      "log_loss_mean": 0.419568478731259
+    },
+    {
+      "C": 0.03,
+      "precision_mean": 0.7109138724523341,
+      "precision_sd": 0.004751464162399001,
+      "log_loss_mean": 0.41334992701373136
+    },
+    {
+      "C": 0.1,
+      "precision_mean": 0.7128862590401052,
+      "precision_sd": 0.003607793809082264,
+      "log_loss_mean": 0.41076179264493967
+    },
+    {
+      "C": 0.3,
+      "precision_mean": 0.709714003944773,
+      "precision_sd": 0.004723196911370497,
+      "log_loss_mean": 0.4101084625609938
+    },
+    {
+      "C": 1.0,
+      "precision_mean": 0.7085329200713817,
+      "precision_sd": 0.004282597277262422,
+      "log_loss_mean": 0.41007715136090644
+    },
+    {
+      "C": 3.0,
+      "precision_mean": 0.707743965436273,
+      "precision_sd": 0.0017932024815821492,
+      "log_loss_mean": 0.41010709915466825
+    },
+    {
+      "C": 10.0,
+      "precision_mean": 0.7085282239128393,
+      "precision_sd": 0.002352831670445952,
+      "log_loss_mean": 0.41013329947531224
+    }
+  ]
+}

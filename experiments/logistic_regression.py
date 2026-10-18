@@ -21,10 +21,10 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-ARTIFACT_DIR = REPO_ROOT / "artifacts" / "experiments" / "logistic_regression"
-ARTIFACT_RELATIVE_PATH = (
-    "artifacts/experiments/logistic_regression/logistic_regression_comparison.json"
+ARTIFACT_DIR = (
+    REPO_ROOT / "artifacts" / "public" / "experiments" / "logistic_regression"
 )
+ARTIFACT_RELATIVE_PATH = "artifacts/public/experiments/logistic_regression/logistic_regression_comparison.json"
 SRC_ROOT = str(REPO_ROOT / "src")
 if SRC_ROOT not in sys.path:
     sys.path.insert(0, SRC_ROOT)

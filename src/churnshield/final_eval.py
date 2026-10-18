@@ -21,7 +21,7 @@ from .protocol import validate_final_authorization
 from .settings import THRESHOLDS_CONFIG_PATH, threshold_config
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-CONFIG_PATH = REPO_ROOT / "config" / "agente.yaml"
+CONFIG_PATH = REPO_ROOT / "config" / "agent.yaml"
 THRESHOLD = float(
     threshold_config()["medidas_formales"]["M1_precision_at_15"]["umbral"]
 )
@@ -50,7 +50,7 @@ def _write_jsonl(path: Path, rows: list[dict]) -> None:
 
 def run_final_evaluation(
     *,
-    output_dir: str | Path = "artifacts/final_evaluation",
+    output_dir: str | Path = "artifacts/private/final_evaluation",
     confirm_final: bool = False,
     authorization_file: str | Path | None = None,
 ) -> dict:
@@ -192,9 +192,9 @@ def run_final_evaluation(
             {
                 "model_file": "model_v1_frozen.joblib",
                 "model_sha256": _sha256(out / "model_v1_frozen.joblib"),
-                "config_file": "config/agente.yaml",
+                "config_file": "config/agent.yaml",
                 "config_sha256": _sha256(CONFIG_PATH),
-                "thresholds_file": "config/umbrales.yaml",
+                "thresholds_file": "config/thresholds.yaml",
                 "thresholds_sha256": _sha256(THRESHOLDS_CONFIG_PATH),
                 "dataset_sha256": dev_meta["dataset_sha256"],
                 "partition_sha256": dev_meta["partition_sha256"],

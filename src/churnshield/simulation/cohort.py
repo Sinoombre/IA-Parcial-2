@@ -187,7 +187,7 @@ def development_inputs() -> tuple[
 def run_simulation(
     *,
     repetition_seed: int = 101,
-    output_dir: str | Path = "artifacts/cohort_simulation",
+    output_dir: str | Path = "artifacts/public/cohort_simulation",
     evaluator_output_dir: str | Path | None = None,
 ) -> dict:
     evaluator_root = evaluator_output_path(output_dir, evaluator_output_dir)

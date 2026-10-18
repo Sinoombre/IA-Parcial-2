@@ -14,7 +14,7 @@ from .utility import add_utilities
 from .decision import select_candidates
 from .settings import AGENT_CONFIG_PATH, THRESHOLDS_CONFIG_PATH
 
-ARTIFACT_DIR = Path(__file__).resolve().parents[2] / "artifacts" / "dev_eval"
+ARTIFACT_DIR = Path(__file__).resolve().parents[2] / "artifacts" / "public" / "dev_eval"
 
 
 def run_dev_eval(*, output_dir: str | Path = ARTIFACT_DIR):

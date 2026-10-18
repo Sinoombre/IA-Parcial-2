@@ -2,18 +2,11 @@ version: "fase-1-borrador"
 estado: "BORRADOR: Se debe volver a revisar antes de realizar el S01 (Simulacion 1)"
 
 features:
+features:
   allowed_predictors:
     - Partner
     - Dependents
-    - Phone Service
-    - Multiple Lines
     - Internet Service
-    - Online Security
-    - Online Backup
-    - Device Protection
-    - Tech Support
-    - Streaming TV
-    - Streaming Movies
     - Contract
     - Paperless Billing
     - Payment Method
@@ -38,6 +31,15 @@ features:
     - Lat Long
     - Latitude
     - Longitude
+  excluded_by_design:
+    - Phone Service
+    - Multiple Lines
+    - Online Security
+    - Online Backup
+    - Device Protection
+    - Tech Support
+    - Streaming TV
+    - Streaming Movies
   cltv_usage: "solo_utilidad_no_predictor"
 
 data:

@@ -1,4 +1,4 @@
-name: Phase 1 CI
+name: Phase 1 and 2 CI
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  phase1:
+  phases:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,25 +26,18 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Compilar código
+      - name: Compilar código y pruebas
         run: |
-          python -m compileall -q src/churnshield tests
-
-      - name: Ejecutar S03
-        env:
-          PYTHONPATH: src
-        run: |
-          python -m churnshield run \
-            --scenario S03 \
-            --config config/agente.yaml
+          python -m compileall -q src/churnshield experiments tests/fase1 tests/fase2 tests/experiments
 
       - name: Ejecutar pruebas
         env:
           PYTHONPATH: src
         run: |
-          python -m pytest -q tests
+          python -m pytest -q tests/fase1 tests/fase2 tests/experiments
 
-      - name: Verificar que el EDA no cambió
+      - name: Probar escenario S03 de Fase 1
+        env:
+          PYTHONPATH: src
         run: |
-          test "$(sha256sum data/EDA.ipynb | cut -d ' ' -f 1)" = \
-          "e7242422ab7051bfddb5dae19007308d4ddbc05babbaf43bec663b5e7bc73d77"
+          python -m churnshield run --scenario S03

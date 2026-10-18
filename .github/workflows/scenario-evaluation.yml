@@ -47,7 +47,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install scenario dependencies
-        run: python -m pip install numpy==1.26.4 pandas==2.2.3
+        run: python -m pip install numpy==1.26.4 pandas==2.2.3 scikit-learn==1.5.2
 
       - name: Run selected scenario
         env:
@@ -61,7 +61,7 @@ jobs:
             exit 1
           fi
 
-          args=(scenarios --seed "$SEED" --output-dir artifacts/scenarios)
+          args=(scenarios --seed "$SEED" --output-dir artifacts/scenarios --evaluator-output-dir artifacts/evaluator_truth)
           if [[ "$SCENARIO" == "all" ]]; then
             args+=(--all)
           else
@@ -73,11 +73,19 @@ jobs:
 
           python -m churnshield "${args[@]}"
 
+      - name: Evaluate M2 and M3
+        env:
+          PYTHONPATH: src
+        run: |
+          python -m churnshield evaluate \
+            --input-dir artifacts/scenarios \
+            --output artifacts/scenario_evaluation.json
+
       - name: Upload scenario results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: scenario-results-${{ github.run_id }}
-          path: artifacts/scenarios/
+          path: artifacts/
           if-no-files-found: warn
           retention-days: 14

@@ -1,0 +1,1 @@
+{"routes":[{"path":"/","title":"ChurnShield Prediction Lab"},{"path":"/api/health","title":"Health"},{"path":"/api/predict","title":"Prediction API"}]}

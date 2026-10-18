@@ -2,7 +2,6 @@ version: "borrador-v1"
 estado: "BORRADOR: Revisar antes de autorizar S01 (Simulacion 1)"
 
 features:
-features:
   allowed_predictors:
     - Partner
     - Dependents
@@ -76,7 +75,7 @@ model:
   final_test_locked: true
 
 simulation:
-  status: "implemented_phase4"
+  status: "implemented"
   cycles: 6
   master_seed: 1702
   repetition_seeds: [101, 102, 103, 104, 105]
@@ -85,14 +84,14 @@ simulation:
   truth_fields_evaluator_only: ["would_churn", "saved", "q_i"]
 
 learning:
-  status: "implemented_phase4"
+  status: "implemented"
   segments: "risk_terciles_from_train"
   m0: 10
   update_formula: "(m0 * r0 + E - O) / (m0 + E)"
   update_timing: "end_cycle_use_next_cycle"
 
 crm:
-  status: "implemented_phase4"
+  status: "implemented"
   campaign_type: "retention_campaign"
   outcomes: ["accepted", "rejected", "error", "timeout"]
   timeout_retries: 1

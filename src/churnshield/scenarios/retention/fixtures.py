@@ -30,9 +30,7 @@ def build_fixture(
         missing_count = max(1, int(np.ceil(scenario.customer_count * 0.05)))
         cltv[:missing_count] = np.nan
 
-    df = pd.DataFrame(
-        {"CustomerID": ids, "CLTV": cltv, "Churn Value": historical}
-    )
+    df = pd.DataFrame({"CustomerID": ids, "CLTV": cltv, "Churn Value": historical})
     imputed_count = 0
     if scenario.missing_first_cltv:
         imputed_count = int(df["CLTV"].isna().sum())

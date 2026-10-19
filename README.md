@@ -3,7 +3,7 @@
 <div align="center">
 
 ![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)
-![Estado](https://img.shields.io/badge/estado-en_desarrollo-yellow.svg)
+![Estado](https://img.shields.io/badge/estado-estable-green.svg)
 ![Ruff](https://img.shields.io/badge/linter-ruff-ff6f00.svg)
 ![Tests](https://img.shields.io/badge/tests-pytest-0A9ED9.svg)
 

@@ -38,8 +38,6 @@ El proyecto implementa un sistema llamado ChurnShield que predice la probabilida
 12. [Notas importantes y restricciones](#12-notas-importantes-y-restricciones)
 13. [Contacto y créditos](#13-contacto-y-créditos)
 
----
-
 ## 1. Qué hace el proyecto
 
 ChurnShield es un proyecto de Inteligencia Artificial centrado en la retención de clientes. Su objetivo principal es predecir qué clientes tienen mayor probabilidad de cancelar su servicio (churn) y decidir a cuáles de ellos dirigir una campaña de retención, maximizando el valor esperado de la acción.
@@ -57,8 +55,6 @@ El flujo general del proyecto es:
 7. Opcionalmente, ejecución de la evaluación final reservada S01 bajo protocolo de autorización (`evaluate-final`).
 
 El modelo de desarrollo es un stacking regularizado que combina regresión logística, LightGBM, XGBoost y CatBoost. Se conserva una regresión logística independiente como referencia de comparación. El model card y el manifiesto registran el conjunto de features y los hashes del dataset, la partición, la configuración y los umbrales.
-
----
 
 ## 2. Arquitectura y componentes principales
 
@@ -87,8 +83,6 @@ La carpeta `ui` contiene una aplicación Flask (`app.py`) con templates y static
 
 La carpeta `experiments` contiene scripts de comparación: `logistic_regression.py`, `random_forest.py` y `stacking.py`.
 
----
-
 ## 3. Requisitos previos
 
 - Python 3.12 (el proyecto se prueba con esta versión).
@@ -97,8 +91,6 @@ La carpeta `experiments` contiene scripts de comparación: `logistic_regression.
 - Git instalado si se desea ejecutar el protocolo S01 (se requiere árbol Git limpio y commit fijado).
 
 No se requieren credenciales de cloud ni claves de API externas. Todo se ejecuta localmente.
-
----
 
 ## 4. Preparar el entorno paso a paso
 
@@ -137,8 +129,6 @@ Las dependencias principales instaladas son:
 - Flask para la interfaz web.
 - matplotlib, seaborn, openpyxl, jupyter para análisis y experimentos.
 - pytest y ruff para pruebas y calidad de código.
-
----
 
 ## 5. Configuración del modelo (config/agent.yaml)
 
@@ -180,8 +170,6 @@ Otros parámetros clave en `config/agent.yaml`:
 
 El model card y el manifiesto registran el conjunto de features y los hashes del dataset, la partición, la configuración y los umbrales. `config/thresholds.yaml` registra las medidas formales M1 (Precisión@15 con umbral 0.75), M2 (trazabilidad al 100 %) y M3 (manejo de fallas al 100 %).
 
----
-
 ## 6. Entrenar y regenerar el modelo
 
 Para entrenar el modelo de desarrollo y regenerar los artifacts que consume la interfaz, ejecute:
@@ -193,8 +181,6 @@ python -m churnshield dev-eval
 Esto entrena la variante de stacking con CatBoost y regenera el modelo en `artifacts/public/dev_eval/stacking/`. Antes de predecir, la interfaz verifica el model card; si el modelo falta, la tarjeta es inválida o las features no coinciden, responde con HTTP 503 en vez de inventar valores.
 
 La regresión logística independiente se conserva como referencia de comparación y no se sobrescribe con este comando.
-
----
 
 ## 7. Ejecución paso a paso del proyecto
 
@@ -245,8 +231,6 @@ python -m ui.app
 
 La interfaz usa el modelo de desarrollo de `artifacts/public/dev_eval/stacking/`. Antes de predecir verifica el model card; si el modelo falta, la tarjeta es inválida o las features no coinciden, responde con HTTP 503 en vez de inventar valores.
 
----
-
 ## 8. Evaluación final reservada S01 y protocolo de autorización
 
 S01 permanece bloqueado para el uso rutinario. No se ejecuta con pytest, `dev-eval`, escenarios ni la interfaz. Antes de cargar una sola fila reservada se requiere:
@@ -273,8 +257,6 @@ python -m churnshield evaluate-final `
 
 El loader valida y registra el protocolo antes de cargar la partición reservada y bloquea la reutilización del directorio de salida. Las verificaciones locales no autorizan ni ejecutan S01.
 
----
-
 ## 9. Pruebas y calidad de código
 
 Ejecutar toda la suite de pruebas:
@@ -300,8 +282,6 @@ python -m ruff format --check `
 
 El workflow **Code quality** ejecuta Ruff y toda la suite de pytest en cada integración.
 
----
-
 ## 10. Organización de artifacts (público vs privado)
 
 `artifacts/public/` contiene resultados operativos reproducibles que se pueden revisar y versionar: métricas de desarrollo, modelo de desarrollo, salidas sintéticas y resultados de experimentos.
@@ -321,8 +301,6 @@ Rutas principales de resultados:
 - `artifacts/private/final_evaluation/`: resultados de S01 (privada, solo si se autoriza).
 
 Se retiraron las carpetas de resultados duplicadas o históricas y se volvieron a generar las salidas operativas desde el código actual. No se borró el dataset fuente ni el índice de partición; este último se reubicó bajo `artifacts/public/data/`.
-
----
 
 ## 11. Estructura del repositorio
 
@@ -385,8 +363,6 @@ IA-Parcial-2/
 |   +-- scenario_evaluation/
 ```
 
----
-
 ## 12. Notas importantes y restricciones
 
 - Solo se permiten los nueve predictores en `config/agent.yaml`. Las ocho columnas de `excluded_by_design` no se usan como features.
@@ -397,8 +373,6 @@ IA-Parcial-2/
 - S01 permanece bloqueado para uso rutinario. Requiere árbol Git limpio, hashes coincidentes, archivo de autorización con dos aprobadores y directorio de salida nuevo.
 - Las verificaciones locales no autorizan ni ejecutan S01.
 - El proyecto se prueba con Python 3.12. Otras versiones no están garantizadas.
-
----
 
 ## 13. Contacto y créditos
 

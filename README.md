@@ -1,7 +1,9 @@
-﻿![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)
+﻿<div align="center">
+![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)
 ![Estado](https://img.shields.io/badge/estado-estable-green.svg)
 ![Ruff](https://img.shields.io/badge/linter-ruff-ff6f00.svg)
 ![Tests](https://img.shields.io/badge/tests-pytest-0A9ED9.svg)
+</div>
 
 # IA-Parcial-2
 
@@ -9,10 +11,7 @@
 ![LightGBM](https://img.shields.io/badge/LightGBM-4.7.0-blue.svg)
 ![XGBoost](https://img.shields.io/badge/XGBoost-3.4.1-e52626.svg?logo=xgboost)
 ![CatBoost](https://img.shields.io/badge/CatBoost-1.2.10-2470b8.svg)
-![pandas](https://img.shields.io/badge/pandas-3.0.6-150458.svg?logo=pandas)
-![numpy](https://img.shields.io/badge/numpy-2.5.4-013243.svg?logo=numpy)
 ![Flask](https://img.shields.io/badge/Flask-3.1.3-000.svg?logo=flask)
-![PyYAML](https://img.shields.io/badge/PyYAML-6.0.3-3cb361.svg?logo=python)
 
 Proyecto de predicción y simulación de retención para el segundo parcial de Inteligencia Artificial.
 
